@@ -97,7 +97,6 @@ def load():
     gadget_return_history = load_data("gadget_return_history.csv")
 
 # ============================ F15 ========================================
-
 def save_data(file,data):
     f = open(file, "w") 
     f.write(data)
@@ -114,6 +113,7 @@ def convert_datas_to_string(file):
         string_data += ";".join(arr_data_all_string)
         string_data += "\n"
     return string_data
+
 # ============================ FUNGSI TAMBAHAN ========================================
 
 # Mengubah data
@@ -129,7 +129,6 @@ program = True
 login_status = False
 isAdmin = False
 
-print(user)
 while (program):
     print("Loading...")
     time.sleep(2)
@@ -145,5 +144,7 @@ while (program):
         if login_status == True:
             if perintah == "register":
                 register()
+            # elif ...
+            # elif ...
         else:
             print("Anda harus login terlebih dahulu")
