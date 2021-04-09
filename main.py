@@ -54,6 +54,54 @@ def carirarity():
             print("Tahun ditemukan  :", data[i][5])
             print()
 
+
+# ============================ F5 ========================================
+def IDItemAda(data, ID):
+    itemAda = False
+    for i in range(len(data)):
+        if data[i][0] == ID:
+            itemAda = True
+            break
+    
+    return itemAda
+
+def tambahitem():
+    # Khusus admin, nanti diberi validasi di main program
+    ID = input("Masukkan ID: ")
+    
+    lanjut = False
+    if (ID[0] == 'G'):
+        if IDItemAda(gadget,ID):
+            print("Gagal menambahkan item karena ID sudah ada.")
+        else:
+            lanjut = True
+    elif (ID[0] == 'C'):
+        if IDItemAda(consumable,ID):
+            print("Gagal menambahkan item karena ID sudah ada.")
+        else:
+            lanjut = True
+    else:
+        print("Gagal menambahkan item karena ID tidak valid.") # asumsi ID diawali huruf besar (kapitalisasi benar)
+    
+    if lanjut:
+        nama = input("Masukkan Nama: ")
+        deskripsi = input("Masukkan Deskripsi: ")
+        jumlah = int(input("Masukkan Jumlah: "))
+        rarity = input("Masukkan Rarity: ")
+        
+        daftar_rarity = "CBAS"
+        if rarity in daftar_rarity:
+            arrTambahItem = [ID,nama,deskripsi,jumlah,rarity]
+            if ID[0] == 'G':
+                tahun = int(input("Masukkan tahun ditemukan: "))
+                arrTambahItem.append(tahun)
+                gadget.append(arrTambahItem)
+            else:
+                consumable.append(arrTambahItem)
+            print("Item telah berhasil ditambahkan ke database.")
+        else:
+            print("Input rarity tidak valid!")
+    
 # ============================ F14 ========================================
 def load_data(file):
     f = open(file,"r")
