@@ -38,34 +38,23 @@ def login():
         
 # ============================ F3 ========================================
 def carirarity():
-    data = gadget
     rarity = input("Masukkan rarity: ")
     
     print()
     print("Hasil pencarian: ")
     print()
     
-    for i in range(len(data)):
-        if data[i][4] == rarity:
-            print("Nama             :", data[i][1])
-            print("Deskripsi        :", data[i][2])
-            print("Jumlah           :", data[i][3])
-            print("Rarity           :", data[i][4])
-            print("Tahun ditemukan  :", data[i][5])
+    for i in range(len(gadget)):
+        if gadget[i][4] == rarity:
+            print("Nama             :", gadget[i][1])
+            print("Deskripsi        :", gadget[i][2])
+            print("Jumlah           :", gadget[i][3])
+            print("Rarity           :", gadget[i][4])
+            print("Tahun ditemukan  :", gadget[i][5])
             print()
 
-
 # ============================ F5 ========================================
-def IDItemAda(data, ID):
-    itemAda = False
-    for i in range(len(data)):
-        if data[i][0] == ID:
-            itemAda = True
-            break
-    
-    return itemAda
-
-def tambahitem():
+def tambahItem():
     # Khusus admin, nanti diberi validasi di main program
     ID = input("Masukkan ID: ")
     
@@ -101,7 +90,52 @@ def tambahitem():
             print("Item telah berhasil ditambahkan ke database.")
         else:
             print("Input rarity tidak valid!")
-    
+
+# ============================ F6 ========================================
+def hapusItem():
+    ID = input("Masukkan ID item: ")
+    if ID[0] == 'G':
+        if IDItemAda(gadget,ID):
+            urutan = cariID(gadget,ID)
+            jawaban = input("Apakah anda yakin ingin menghapus " + gadget[urutan][1] + " (Y/N)? ")
+            if jawaban == 'Y':
+                gadget.pop(urutan)
+                print()
+                print("Item telah berhasil dihapus dari database.")
+        else:
+            print()
+            print("Tidak ada item dengan ID tersebut.")
+    elif ID[0] == 'C':
+        if IDItemAda(consumable,ID):
+            urutan = cariID(consumable,ID)
+            jawaban = input("Apakah anda yakin ingin menghapus " + consumable[urutan][1] + " (Y/N)? ")
+            if jawaban == 'Y':
+                consumable.pop(urutan)
+                print()
+                print("Item telah berhasil dihapus dari database.")
+        else:
+            print()
+            print("Tidak ada item dengan ID tersebut.")
+    else:
+        print()
+        print("Tidak ada item dengan ID tersebut.")
+
+# ============================ F11 ========================================
+def cetakRiwayat(index,namaUser,namaGadget):
+    print()
+    print("ID Peminjam          : " + gadget_borrow_history[index][1])
+    print("Nama Pengambil       : " + namaUser)
+    print("Nama Gadget          : " + namaGadget)
+    print("Tanggal Peminjamanan : " + gadget_borrow_history[index][3])
+    print("Jumlah               : " + str(gadget_borrow_history[index][4]))
+
+def riwayatPinjam(idUser):
+    namaUser = user[cariID(user,idUser)][2]
+    for i in range(len(gadget_borrow_history)):
+        if gadget_borrow_history[i][1] == idUser:
+            namaGadget = gadget[cariID(gadget,gadget_borrow_history[i][2])][1]
+            cetakRiwayat(i,namaUser,namaGadget)
+
 # ============================ F14 ========================================
 def load_data(file):
     f = open(file,"r")
@@ -168,6 +202,22 @@ def convert_datas_to_string(file):
 def modify_data(data, idx, col, value):
     data[idx][col] = value
     return data
+
+# Mencari data Item berdasarkan ID
+def cariID(data,ID):
+    urutan = 0
+    for i in range(len(data)):
+        if data[i][0] == ID:
+            urutan = i
+            break
+    return urutan
+
+# Mengecek ada tidaknya item
+def IDItemAda(data,ID):
+    if cariID(data,ID) == 0:
+        return False
+    else:
+        return True
 
 # ============================== MAIN PROGRAM =======================================
 
