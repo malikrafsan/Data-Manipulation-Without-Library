@@ -21,19 +21,20 @@ def register():
 
 # ============================ F2 ========================================
 def login():
-    global login_status
+    global hasLogin
     global isAdmin
+    global idUser
     
     username = input("Masukkan username: ")
     password = input("Masukkan password: ")
 
     for i in range(len(user)):
-        if (username == user[i][1]) and (password == user[i][3]):
-            login_status = True
-            if user[i][5] == "Admin":
-                isAdmin = True
-    
-    if login_status == False:
+        if (username == user[i][1]) and (password == user[i][3]): #belum dihash
+            hasLogin = True
+            idUser = user[i][0]
+            if user[i][4] == "Admin":
+                isAdmin = True   
+    if not hasLogin:
         print("Username atau password Anda tidak cocok")
         
 # ============================ F3 ========================================
@@ -184,9 +185,13 @@ def save_data(file,data):
     f.write(data)
     f.close()
 
-def save(user,gadget):
+def save():
     save_data("user.csv",user)
     save_data("gadget.csv",gadget)
+    save_data("consumable.csv",consumable)
+    save_data("gagdet_borrow_history.csv",gadget_borrow_history)
+    save_data("gadget_return_history.csv",gadget_return_history)
+    save_data("consumable_history.csv",consumable_history)    
     
 def convert_datas_to_string(file):
     string_data = ""
@@ -221,28 +226,88 @@ def IDItemAda(data,ID):
 
 # ============================== MAIN PROGRAM =======================================
 
-user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []
+user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []; idUser = ""
 
 program = True
-login_status = False
+hasLogin = False
 isAdmin = False
 
+print("Loading...")
+time.sleep(2)
+load()
+print('Selamat datang di "Kantong Ajaib!"')
+
 while (program):
-    print("Loading...")
-    time.sleep(2)
-    load()
-    print('Selamat datang di "Kantong Ajaib!"')
     perintah = input((">>> "))
     if perintah == "help":
         pass
         # printhelp()
     elif perintah == "login":
-        login()
+        if hasLogin:
+            print("Anda sudah login, exit terlebih dahulu untuk menggunakan akun lain")
+        else:
+            login() #dapet idUser
     else:
-        if login_status == True:
+        if hasLogin:
             if perintah == "register":
-                register()
-            # elif ...
-            # elif ...
+                if isAdmin:
+                    register()
+                else:
+                    pass #print() peringatan
+            elif perintah == "carirarity":
+                carirarity()
+            elif perintah == "caritahun":
+                pass #caritahun()
+            elif perintah == "tambahitem":
+                if isAdmin:
+                    tambahItem()
+                else:
+                    pass #print() peringatan
+            elif perintah == "hapusitem":
+                if isAdmin:
+                    hapusItem()
+                else:
+                    pass #print() peringatan
+            elif perintah == "ubahjumlah":
+                if isAdmin:
+                    pass #ubahJumlah()
+                else:    
+                    pass #print() peringatan
+            elif perintah == "pinjam":
+                if not isAdmin:
+                    pass #pinjam()
+                else:
+                    pass #print() peringatan
+            elif perintah == "kembalikan":
+                if not isAdmin:
+                    pass #kembalikan()
+                else:
+                    pass #print() peringatan
+            elif perintah == "minta":
+                if not isAdmin:
+                    pass #minta()
+                else:
+                    pass #print() peringatan
+            elif perintah == "riwayatpinjam":
+                if isAdmin:
+                    riwayatPinjam(idUser)
+                else:
+                    pass #print() peringatan
+            elif perintah == "riwayatkembali":
+                if isAdmin:    
+                    pass #riwayatKembali
+                else:
+                    pass #print() peringatan
+            elif perintah == "riwayatambil":
+                if isAdmin:
+                    pass #riwayatAmbil()
+                else:
+                    pass #print() peringatan
+            elif perintah == "save":
+                save()
+            elif perintah == "exit":
+                pass #exit()
+            else:
+                print("Input anda tidak valid") #diganti nanti          
         else:
             print("Anda harus login terlebih dahulu")
