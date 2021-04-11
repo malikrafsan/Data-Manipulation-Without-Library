@@ -38,7 +38,7 @@ def login():
         print("Username atau password Anda tidak cocok")
         
 # ============================ F3 ========================================
-def carirarity():
+def cariRarity():
     rarity = input("Masukkan rarity: ")
     
     print()
@@ -255,7 +255,7 @@ while (program):
                 else:
                     pass #print() peringatan
             elif perintah == "carirarity":
-                carirarity()
+                cariRarity()
             elif perintah == "caritahun":
                 pass #caritahun()
             elif perintah == "tambahitem":
@@ -308,6 +308,6 @@ while (program):
             elif perintah == "exit":
                 pass #exit()
             else:
-                print("Input anda tidak valid") #diganti nanti          
+                print("Input anda tidak valid, ketik help untuk mendapatkan daftar input yang valid") #diganti nanti          
         else:
             print("Anda harus login terlebih dahulu")
