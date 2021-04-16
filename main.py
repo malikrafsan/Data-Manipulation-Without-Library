@@ -2,17 +2,24 @@ import os; import sys; import math; import time; import argparse; import datetim
 
 # ============================ F1 ========================================
 def register():
+    # Belum selesai, belum dikasih validasi username unik
+    global user
+    
     nama = input("Masukkan nama: ")
     username = input("Masukkan username: ")
     password = input("Masukkan password: ")
     alamat = input("Masukkan alamat: ")
     
-    id_user = "U" + str(len(user))
+    count = 0
+    for i in range(len(user)):
+        if user[i][0][0] == 'U':
+            count += 1
+    
+    id_user = "U" + str(count + 1)
     
     register = [[id_user,username,nama,alamat,password,"User"]]
 
     user += register
-    print(user)
     print("User", username, "telah berhasil register ke dalam Kantong Ajaib.")
 
 # ============================ F2 ========================================
@@ -29,7 +36,7 @@ def login():
             hasLogin = True
             idUser = user[i][0]
             print("Selamat datang " + user[i][2] + " ^_^")
-            if user[i][4] == "Admin":
+            if user[i][5] == "Admin":
                 isAdmin = True   
     if not hasLogin:
         print("Username atau password Anda tidak cocok")
@@ -181,6 +188,8 @@ def load():
 
 # ============================ F15 ========================================
 def save_data(file,data):
+    data = convert_datas_to_string(data)
+    
     f = open(file, "w") 
     f.write(data)
     f.close()
@@ -201,6 +210,21 @@ def convert_datas_to_string(file):
         string_data += "\n"
     return string_data
 
+# ============================ F17 ========================================
+
+# Kalo mau diganti boleee, aku mbuat cuma nyoba nyoba wkwkw
+def exit():
+    global program
+
+    isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (y/n) ")
+    if isSave == 'y':
+        save()
+    elif isSave != 'n':
+        print("input tidak valid")
+        exit()
+    print("Terima kasih telah menggunakan kantong ajaib ^_^")
+    program = False
+        
 # ============================ FB03 ========================================
 def seed(seed):
     global random
@@ -391,6 +415,7 @@ while (program):
                 if isAdmin:
                     register()
                 else:
+                    print("Hanya boleh diakses oleh admin ^_^")
                     pass #print() peringatan
             elif perintah == "carirarity":
                 cariRarity()
@@ -444,7 +469,8 @@ while (program):
             elif perintah == "save":
                 save()
             elif perintah == "exit":
-                pass #exit()
+                # Diganti ajaaa gapapaa, ini cuma testing
+                exit()
             elif perintah == "gacha":
                 gacha()
             else:
