@@ -1,1 +1,4 @@
 id;id_peminjam;id_gadget;tanggal_peminjaman;jumlah
+GBH1;U1;G6;14/04/2021;6
+GBH2;U2;G8;15/04/2021;10
+GBH3;U2;G1;15/04/2021;5

@@ -1,8 +1,4 @@
-import os
-import sys
-import math
-import time
-import argparse
+import os; import sys; import math; import time; import argparse; import datetime
 
 # ============================ F1 ========================================
 def register():
@@ -29,9 +25,10 @@ def login():
     password = input("Masukkan password: ")
 
     for i in range(len(user)):
-        if (username == user[i][1]) and (password == user[i][3]): #belum dihash
+        if (username == user[i][1]) and (password == user[i][4]): #belum dihash
             hasLogin = True
             idUser = user[i][0]
+            print("Selamat datang " + user[i][2] + " ^_^")
             if user[i][4] == "Admin":
                 isAdmin = True   
     if not hasLogin:
@@ -149,10 +146,6 @@ def load_data(file):
         data =""
         for i in range(len(line)):
             if line[i] == ';':
-                try:
-                    data = int(data)
-                except:
-                    ValueError
                 lst.append(data)
                 data = ""
             elif (i == len(line) - 1):
@@ -162,6 +155,15 @@ def load_data(file):
         lstAll.append(lst)
     return lstAll
 
+def tryInt(data):
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            try:
+                data[i][j] = int(data[i][j])
+            except:
+                ValueError
+    return data
+
 def load(): 
     global user
     global gadget
@@ -170,14 +172,12 @@ def load():
     global gadget_borrow_history
     global gadget_return_history
     
-    user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []
-    
     user = load_data("user.csv")
-    gadget = load_data("gadget.csv")
-    consumable = load_data("consumable.csv")
-    consumable_history = load_data("consumable_history.csv")
-    gadget_borrow_history = load_data("gadget_borrow_history.csv")
-    gadget_return_history = load_data("gadget_return_history.csv")
+    gadget = tryInt(load_data("gadget.csv"))
+    consumable = tryInt(load_data("consumable.csv"))
+    consumable_history = tryInt(load_data("consumable_history.csv"))
+    gadget_borrow_history = tryInt(load_data("gadget_borrow_history.csv"))
+    gadget_return_history = tryInt(load_data("gadget_return_history.csv"))
 
 # ============================ F15 ========================================
 def save_data(file,data):
@@ -200,6 +200,136 @@ def convert_datas_to_string(file):
         string_data += ";".join(arr_data_all_string)
         string_data += "\n"
     return string_data
+
+# ============================ FB03 ========================================
+def seed(seed):
+    global random
+    random = seed
+
+def rand():
+    a = 47071034
+    c = 22206856
+    m = 87635214759
+    global random
+    random = (a*random + c) % m
+    return random
+
+def Bold(string):
+    hasil = "\033[1m" + string + "\033[0m"
+    return hasil
+
+def chance(lstRarity,rarity):
+    if rarity == 'C':
+        lstRarity[0] += 90
+        lstRarity[1] += 10
+    elif rarity == 'B':
+        lstRarity[0] += 10
+        lstRarity[1] += 80
+        lstRarity[2] += 10
+    elif rarity == 'A':
+        lstRarity[1] += 10
+        lstRarity[2] += 80
+        lstRarity[3] += 10
+    else:
+        lstRarity[2] += 10
+        lstRarity[3] += 90
+    sum = 0
+    for i in range(4):
+        sum += lstRarity[i]
+    for i in range(4):
+        lstRarity[i] = lstRarity[i] * 100 / sum
+
+    return lstRarity
+
+def printChance(chance,rarity):
+    if chance != 0:
+        return Bold(rarity) + " (" + Bold("{:.2f}".format(chance)) + "%) "
+    else:
+        return ""
+
+def hasilGacha(lstChance):
+    random = rand() % 100 # 0 - 99
+    random += 1
+    for i in range(4):
+        random -= lstChance[i]
+        if random <= 0:
+            if i == 0:
+                return 'C'
+            elif  i == 1:
+                return 'B'
+            elif i == 2:
+                return 'A'
+            else:
+                return 'S'
+
+def gacha():
+    global lstChance
+    global consumable_history
+    global consumable
+    
+    print()
+    print("========INVENTORY========")
+    count = 0
+    IDInventory = []
+    for i in range(len(consumable_history)):
+        if consumable_history[i][1] == idUser:
+            count += 1
+            urutan = cariID(consumable,consumable_history[i][2])
+            print(str(count) + ". " + consumable[urutan][1] + "(Rarity " + consumable[urutan][4] + ") (" + str(consumable_history[i][4]) + ")")
+            IDInventory.append(consumable_history[i][2])
+    if count == 0:
+        print("Anda tidak mempunyai consumable di inventory Anda")
+        print("=========================")
+        print()
+        return
+    print("=========================")
+    print()
+    digunakan = int(input("Pilih consumable yang mau digunakan: "))
+    if digunakan > count:
+        print("Input anda tidak valid")
+        return
+    jumlah = int(input("Jumlah yang digunakan: "))
+    urutan = cariID(consumable,IDInventory[digunakan - 1])
+    if consumable[urutan][3] < jumlah:
+        print("Jumlah consumable Anda tidak mencukupi")
+    else:
+        print(Bold(consumable[urutan][1]) + " (" + Bold("x" + str(jumlah)) + ") ditambahkan!")
+        lstChance = chance(lstChance,consumable[urutan][4])
+        consumable[urutan][3] += jumlah
+        # Tanya kakaknya kalo digunakan gacha apakah hilang consumablenya
+        consumable_history[cariData(consumable_history,IDInventory[digunakan-1],2)][4] -= jumlah
+        print("Chance mendapatkan Rarity ", end='')
+        if lstChance[0] != 0:
+            print(Bold('C') + " (" + Bold("{:.2f}".format(lstChance[0])) + "%) ", end='')
+        if lstChance[1] != 0:
+            print(Bold('B') + " (" + Bold("{:.2f}".format(lstChance[1])) + "%) ", end='')
+        if lstChance[2] != 0:
+            print(Bold('A') + " (" + Bold("{:.2f}".format(lstChance[2])) + "%) ", end='')
+        if lstChance[3] != 0:
+            print(Bold('S') + " (" + Bold("{:.2f}".format(lstChance[3])) + "%)", end='')
+        print()
+        print()
+        perintah = input("Tambahkan item lagi? (Y/N): ")
+        
+        if perintah == 'Y':
+            gacha()
+        else:
+            print()
+            print("Rolling...")
+            time.sleep(3)
+            print()
+            rarity = hasilGacha(lstChance)        
+            finished = False
+            while not finished:
+                for i in range(len(consumable)):
+                    if consumable[i][4] == rarity:
+                        print("Selamat Anda mendapatkan " + Bold(consumable[i][1]) + " (Rarity " + rarity + ") sebanyak x" + Bold(str(consumable[i][3])) + "!")
+                        tambah_con_history = ["CH" + str(len(consumable_history)),idUser,consumable[i][0],datetime.date.today().strftime("%d/%m/%Y")]
+                        consumable_history += tambah_con_history
+                        lstChance = [0,0,0,0]
+                        finished = True
+                        return
+                rarity = hasilGacha(lstChance)
 
 # ============================ FUNGSI TAMBAHAN ========================================
 
@@ -224,9 +354,16 @@ def IDItemAda(data,ID):
     else:
         return True
 
+# Mencari data berdasarkan index (generalisasi cariID)
+def cariData(data,dicari,index):
+    for i in range(len(data)):
+        if data[i][index] == dicari:
+            return i
+
 # ============================== MAIN PROGRAM =======================================
 
-user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []; idUser = ""
+user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []
+idUser = ""; random=0; lstChance = [0,0,0,0]; seed(7)
 
 program = True
 hasLogin = False
@@ -235,10 +372,11 @@ isAdmin = False
 print("Loading...")
 time.sleep(2)
 load()
+print()
 print('Selamat datang di "Kantong Ajaib!"')
 
 while (program):
-    perintah = input((">>> "))
+    perintah = input(">>> ")
     if perintah == "help":
         pass
         # printhelp()
@@ -307,6 +445,8 @@ while (program):
                 save()
             elif perintah == "exit":
                 pass #exit()
+            elif perintah == "gacha":
+                gacha()
             else:
                 print("Input anda tidak valid, ketik help untuk mendapatkan daftar input yang valid") #diganti nanti          
         else:

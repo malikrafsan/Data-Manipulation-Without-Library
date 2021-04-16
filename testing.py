@@ -1,30 +1,61 @@
-# myls.py
-# Import the argparse library
-import argparse
+def load_data(file):
+    f = open(file,"r")
+    raw_lines = f.readlines()
+    f.close()
+    lines = [raw_line.replace("\n", "") for raw_line in raw_lines]
+    lstAll = []
+    for line in lines:
+        lst = []
+        data =""
+        for i in range(len(line)):
+            if line[i] == ';':
+                lst.append(data)
+                data = ""
+            elif (i == len(line) - 1):
+                lst.append(data + line[i])
+            else:
+                data += line[i]
+        lstAll.append(lst)
+    return lstAll
 
-import os
-import sys
+def tryInt(data):
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            try:
+                data[i][j] = int(data[i][j])
+            except:
+                ValueError
+    return data
 
-# Create the parser
-my_parser = argparse.ArgumentParser(description='List the content of a folder')
+def load(): 
+    global user
+    global gadget
+    global consumable
+    global consumable_history
+    global gadget_borrow_history
+    global gadget_return_history
+    
+    user = load_data("user.csv")
+    gadget = tryInt(load_data("gadget.csv"))
+    consumable = tryInt(load_data("consumable.csv"))
+    consumable_history = tryInt(load_data("consumable_history.csv"))
+    gadget_borrow_history = tryInt(load_data("gadget_borrow_history.csv"))
+    gadget_return_history = tryInt(load_data("gadget_return_history.csv"))
 
-# Add the arguments
-my_parser.add_argument('Path',
-                       metavar='path',
-                       type=str,
-                       help='the path to list')
+user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []
 
-# Execute the parse_args() method
-args = my_parser.parse_args()
+load()
+print(user)
+print("==========")
+print(consumable)
+print("==========")
+print(consumable_history)
+print("==========")
+print(gadget_borrow_history)
+print("==========")
+print(gadget_return_history)
+print("==========")
+print(gadget)
+print("==========")
 
-input_path = args.Path
-
-if not os.path.isdir(input_path):
-    #print('The path specified does not exist')
-    sys.exit()
-
-#print('\n'.join(os.listdir(input_path)))
-
-for i in range(5):
-    if i == 3:
-        break
+print(user[6])

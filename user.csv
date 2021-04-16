@@ -1,2 +1,7 @@
 id;username;nama;alamat;password;role
-A1;malikakbar;Malik Akbar;mabar;Admin
+A1;malikakbar;Malik Akbar;Solo;mabar;Admin
+U1;willy123;Willy Wonka;Semarang;akuwilly;User
+A2;nobita;Nobi Nobita;Tokyo;akunobi;Admin
+U2;giant;Sutetsu;Tokyo juga;akugendud;User
+U3;rerekeren;Rere Roro;Jakarta;akurere;User
+U4;tsubasa;Captain Tsubasa;Kyoto;akutsubasa;User
