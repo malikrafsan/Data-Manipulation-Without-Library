@@ -179,12 +179,14 @@ def load():
     global gadget_borrow_history
     global gadget_return_history
     
+    os.chdir('./csvFolder')
     user = load_data("user.csv")
     gadget = tryInt(load_data("gadget.csv"))
     consumable = tryInt(load_data("consumable.csv"))
     consumable_history = tryInt(load_data("consumable_history.csv"))
     gadget_borrow_history = tryInt(load_data("gadget_borrow_history.csv"))
     gadget_return_history = tryInt(load_data("gadget_return_history.csv"))
+    os.chdir('../')
 
 # ============================ F15 ========================================
 def save_data(file,data):
@@ -207,7 +209,6 @@ def save():
 
     print("Saving...")
     time.sleep(2)
-    
 
     save_data("user.csv",user)
     save_data("gadget.csv",gadget)
@@ -217,6 +218,7 @@ def save():
     save_data("consumable_history.csv",consumable_history)    
     
     print("Data telah disimpan pada folder " + Bold(directory))
+    os.chdir('../')
     
 def convert_datas_to_string(file):
     string_data = ""
