@@ -195,12 +195,28 @@ def save_data(file,data):
     f.close()
 
 def save():
+    parent = os.getcwd()
+    directory = input("Masukkan nama folder penyimpanan : ")
+
+    path = os.path.join(parent, directory)
+    try:
+        os.mkdir(path)
+    except:
+        FileExistsError
+    os.chdir('./' + directory)
+
+    print("Saving...")
+    time.sleep(2)
+    
+
     save_data("user.csv",user)
     save_data("gadget.csv",gadget)
     save_data("consumable.csv",consumable)
     save_data("gagdet_borrow_history.csv",gadget_borrow_history)
     save_data("gadget_return_history.csv",gadget_return_history)
     save_data("consumable_history.csv",consumable_history)    
+    
+    print("Data telah disimpan pada folder " + Bold(directory))
     
 def convert_datas_to_string(file):
     string_data = ""
