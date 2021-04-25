@@ -137,8 +137,62 @@ consumable = [['id', 'nama', 'deskripsi', 'jumlah', 'rarity'], ['C1', 'permen', 
 consumable_history = [['id', 'id_pengambil', 'id_consumable', 'tanggal_peminjaman', 'jumlah'], ['CH1', 'U3', 'C1', '14/04/2021', 1000], 
                       ['CH2', 'U2', 'C3', '15/04/2021', 50], ['CH3', 'U2', 'C6', '15/04/2021', 4]]
 gadget_borrow_history = [['id', 'id_peminjam', 'id_gadget', 'tanggal_peminjaman', 'jumlah'], ['GBH1', 'U1', 'G6', '14/04/2021', 6], 
-                         ['GBH2', 'U2', 'G8', '15/04/2021', 10], ['GBH3', 'U2', 'G1', '15/04/2021', 5]]
+                         ['GBH2', 'U2', 'G8', '15/04/2021', 10], ['GBH3', 'U2', 'G1', '15/04/2021', 5],
+                         ['GBH2', 'U3', 'G8', '15/04/2021', 10], ['GBH3', 'U4', 'G1', '15/04/2021', 5]]
 gadget_return_history = [['id', 'id_peminjam', 'id_gadget', 'tanggal_pengembalian', 'jumlah_peminjaman'], 
                          ['GRH1', 'U1', 'G6', '15/04/2021', 6], ['GRH2', 'U2', 'G1', '16/04/2021', 5]]
 
-save()
+#save()
+#from datetime import datetime
+import datetime
+#gadget_borrow_history[1:].sort(key = lambda date: datetime.strptime(date[3], '%d/%m/%Y'))
+#borrowSort = sorted(gadget_borrow_history[1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'))
+#print(borrowSort)
+"""
+# Mencari data Item berdasarkan ID
+def cariID(data,ID):
+    urutan = 0
+    for i in range(len(data)):
+        if data[i][0] == ID:
+            urutan = i
+            break
+    return urutan
+"""
+# Mencari data Item berdasarkan ID
+def cariID(data,ID):
+    for i in range(len(data)):
+        if data[i][0] == ID:
+            return i
+        
+def riwayatPinjam():
+    count = 0
+    riwayatPinjamPrint(count)
+
+def riwayatPinjamPrint(count):
+    borrowSort = sorted(gadget_borrow_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
+    bisaLanjut = True
+    for i in range(5):
+        try:
+            namaUser = user[cariID(user,borrowSort[i][1])][2]
+            namaGadget = gadget[cariID(gadget,borrowSort[i][2])][1]
+            print()
+            print(i)
+            print("ID Peminjam          : " + borrowSort[i][1])
+            print("Nama Pengambil       : " + namaUser)
+            print("Nama Gadget          : " + namaGadget)
+            print("Tanggal Peminjamanan : " + borrowSort[i][3])
+            print("Jumlah               : " + str(borrowSort[i][4]))
+        except:
+            IndexError
+            print()
+            print("Data sudah habis")
+            bisaLanjut = False
+            break
+    if bisaLanjut and len(borrowSort) != 5:
+        print()
+        lanjut = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+        if lanjut == 'Y':
+            count += 5
+            riwayatPinjamPrint(count)
+        
+riwayatPinjam()

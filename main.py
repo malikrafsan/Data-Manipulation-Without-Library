@@ -30,7 +30,7 @@ def login():
     
     username = input("Masukkan username: ")
     password = input("Masukkan password: ")
-
+    print()
     for i in range(len(user)):
         if (username == user[i][1]) and (password == user[i][4]): #belum dihash
             hasLogin = True
@@ -61,16 +61,19 @@ def cariRarity():
 # ============================ F5 ========================================
 def tambahItem():
     # Khusus admin, nanti diberi validasi di main program
+    print()
     ID = input("Masukkan ID: ")
     
     lanjut = False
     if (ID[0] == 'G'):
         if IDItemAda(gadget,ID):
+            print()
             print("Gagal menambahkan item karena ID sudah ada.")
         else:
             lanjut = True
     elif (ID[0] == 'C'):
         if IDItemAda(consumable,ID):
+            print()
             print("Gagal menambahkan item karena ID sudah ada.")
         else:
             lanjut = True
@@ -126,21 +129,36 @@ def hapusItem():
         print("Tidak ada item dengan ID tersebut.")
 
 # ============================ F11 ========================================
-def cetakRiwayat(index,namaUser,namaGadget):
-    print()
-    print("ID Peminjam          : " + gadget_borrow_history[index][1])
-    print("Nama Pengambil       : " + namaUser)
-    print("Nama Gadget          : " + namaGadget)
-    print("Tanggal Peminjamanan : " + gadget_borrow_history[index][3])
-    print("Jumlah               : " + str(gadget_borrow_history[index][4]))
+def riwayatPinjam():
+    count = 0
+    riwayatPinjamPrint(count)
 
-def riwayatPinjam(idUser):
-    namaUser = user[cariID(user,idUser)][2]
-    for i in range(len(gadget_borrow_history)):
-        if gadget_borrow_history[i][1] == idUser:
-            namaGadget = gadget[cariID(gadget,gadget_borrow_history[i][2])][1]
-            cetakRiwayat(i,namaUser,namaGadget)
-
+def riwayatPinjamPrint(count):
+    borrowSort = sorted(gadget_borrow_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
+    bisaLanjut = True
+    for i in range(5):
+        try:
+            namaUser = user[cariID(user,borrowSort[i][1])][2]
+            namaGadget = gadget[cariID(gadget,borrowSort[i][2])][1]
+            print()
+            print(i)
+            print("ID Peminjam          : " + borrowSort[i][1])
+            print("Nama Pengambil       : " + namaUser)
+            print("Nama Gadget          : " + namaGadget)
+            print("Tanggal Peminjamanan : " + borrowSort[i][3])
+            print("Jumlah               : " + str(borrowSort[i][4]))
+        except:
+            IndexError
+            print()
+            print("Data sudah habis")
+            bisaLanjut = False
+            break
+    if bisaLanjut and len(borrowSort) != 5:
+        print()
+        lanjut = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+        if lanjut == 'Y':
+            count += 5
+            riwayatPinjamPrint(count)
 # ============================ F14 ========================================
 def load_data(file):
     f = open(file,"r")
@@ -206,7 +224,7 @@ def save():
     except:
         FileExistsError
     os.chdir('./' + directory)
-
+    print()
     print("Saving...")
     time.sleep(2)
 
@@ -240,6 +258,7 @@ def exit():
     elif isSave != 'n':
         print("input tidak valid")
         exit()
+    print()
     print("Terima kasih telah menggunakan kantong ajaib ^_^")
     program = False
         
@@ -382,12 +401,9 @@ def modify_data(data, idx, col, value):
 
 # Mencari data Item berdasarkan ID
 def cariID(data,ID):
-    urutan = 0
     for i in range(len(data)):
         if data[i][0] == ID:
-            urutan = i
-            break
-    return urutan
+            return i
 
 # Mengecek ada tidaknya item
 def IDItemAda(data,ID):
@@ -471,7 +487,7 @@ while (program):
                     pass #print() peringatan
             elif perintah == "riwayatpinjam":
                 if isAdmin:
-                    riwayatPinjam(idUser)
+                    riwayatPinjam()
                 else:
                     pass #print() peringatan
             elif perintah == "riwayatkembali":
