@@ -1,8 +1,8 @@
 id;username;nama;alamat;password;role
-A1;malikakbar;Malik Akbar;Solo;mabar;Admin
-U1;willy123;Willy Wonka;Semarang;akuwilly;User
-A2;nobita;Nobi Nobita;Tokyo;akunobi;Admin
-U2;giant;Sutetsu;Tokyo juga;akugendud;User
-U3;rerekeren;Rere Roro;Jakarta;akurere;User
-U4;tsubasa;Captain Tsubasa;Kyoto;akutsubasa;User
-U5;ipal123;refaldi;solo baru;akuipal;User
+A1;malikakbar;Malik Akbar;Solo;600602347;Admin
+U1;willy123;Willy Wonka;Semarang;610132840;User
+A2;nobita;Nobi Nobita;Tokyo;939558629;Admin
+U2;giant;Sutetsu;Tokyo juga;986749045;User
+U3;rerekeren;Rere Roro;Jakarta;984085514;User
+U4;tsubasa;Captain Tsubasa;Kyoto;361022596;User
+U5;ipal123;refaldi;solo baru;88815652;User

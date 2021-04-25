@@ -17,7 +17,7 @@ def register():
     
     id_user = "U" + str(count + 1)
     
-    register = [[id_user,username,nama,alamat,password,"User"]]
+    register = [[id_user,username,nama,alamat,hashing(password),"User"]]
 
     user += register
     print("User", username, "telah berhasil register ke dalam Kantong Ajaib.")
@@ -32,12 +32,12 @@ def login():
     password = input("Masukkan password: ")
     print()
     for i in range(len(user)):
-        if (username == user[i][1]) and (password == user[i][4]): #belum dihash
+        if (username == user[i][1]) and (str(hashing(password)) == str(user[i][4])): #belum dihash
             hasLogin = True
             idUser = user[i][0]
             print("Selamat datang " + user[i][2] + " ^_^")
             if user[i][5] == "Admin":
-                isAdmin = True   
+                isAdmin = True
     if not hasLogin:
         print("Username atau password Anda tidak cocok")
         
@@ -261,11 +261,25 @@ def exit():
     print()
     print("Terima kasih telah menggunakan kantong ajaib ^_^")
     program = False
-        
+
+# ============================ FB01 ========================================
+def hashing(str):
+    # P and M
+    P = 101
+    m = 1e9 + 1
+    powerOfP = 1
+    hashed = 0
+    # Loop to calculate the hash value
+    # by iterating over the elements of string
+    for i in range(len(str)):
+        hashed = ((hashed + (ord(str[i]) - ord('!') + 1) * powerOfP) % m) 
+        powerOfP = (powerOfP * P) % m
+    return int(hashed)
+
 # ============================ FB03 ========================================
 def seed(seed):
     global random
-    random = seed
+    random = round(time.time())
 
 def rand():
     a = 47071034
@@ -274,10 +288,6 @@ def rand():
     global random
     random = (a*random + c) % m
     return random
-
-def Bold(string):
-    hasil = "\033[1m" + string + "\033[0m"
-    return hasil
 
 def chance(lstRarity,rarity):
     if rarity == 'C':
@@ -394,6 +404,11 @@ def gacha():
 
 # ============================ FUNGSI TAMBAHAN ========================================
 
+# Mengembalikan string menjadi tulisan tebal
+def Bold(string):
+    hasil = "\033[1m" + string + "\033[0m"
+    return hasil
+
 # Mengubah data
 def modify_data(data, idx, col, value):
     data[idx][col] = value
@@ -418,10 +433,32 @@ def cariData(data,dicari,index):
         if data[i][index] == dicari:
             return i
 
+# Mengembalikan string menjadi string berwarna jika di-print
+def colorStr(string,color):
+    if color == "purple":
+        warna = '\033[95m'
+    elif color == "cyan":
+        warna = '\033[96m'
+    elif color == "darkcyan":
+        warna = '\033[36m'
+    elif color == "blue":
+        warna = '\033[94m'
+    elif color == "green":
+        warna = '\033[92m'
+    elif color == "yellow":
+        warna = '\033[93m'
+    elif color == "red":
+        warna = '\033[91m'
+    elif color == "bold":
+        warna = '\033[1m'
+    else:
+        return string
+    return warna + string + '\033[0m'
+
 # ============================== MAIN PROGRAM =======================================
 
 user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []
-idUser = ""; random=0; lstChance = [0,0,0,0]; seed(7)
+idUser = ""; random=0; lstChance = [0,0,0,0]
 
 program = True
 hasLogin = False
@@ -431,16 +468,37 @@ print("Loading...")
 time.sleep(2)
 load()
 print()
+print("""\
+\033[93m __  __               __                          _______ __         __ __    \033[0m
+\033[93m|  |/  |.---.-.-----.|  |_.-----.-----.-----.    |   _   |__|.---.-.|__|  |--.\033[0m
+\033[93m|     < |  _  |     ||   _|  _  |     |  _  |    |       |  ||  _  ||  |  _  |\033[0m
+\033[93m|__|\__||___._|__|__||____|_____|__|__|___  |    |___|___|  ||___._||__|_____|\033[0m
+\033[93m                                      |_____|           |___|                 \033[0m
+
+\033[36m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣴⣶⣶⣶⣶⣶⠶⣶⣤⣤⣀⠀⠀⠀⠀⠀⠀ \033[0m
+\033[36m⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⣿⣿⣿⠁⠀⢀⠈⢿⢀⣀⠀⠹⣿⣿⣿⣦⣄⠀⠀⠀ \033[0m
+\033[36m⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⠿⠀⠀⣟⡇⢘⣾⣽⠀⠀⡏⠉⠙⢛⣿⣷⡖⠀ \033[0m
+\033[36m⠀⠀⠀⠀⠀⣾⣿⣿⡿⠿⠷⠶⠤⠙⠒⠀⠒⢻⣿⣿⡷⠋⠀⠴⠞⠋⠁⢙⣿⣄ \033[0m
+\033[36m⠀⠀⠀⠀⢸⣿⣿⣯⣤⣤⣤⣤⣤⡄⠀⠀⠀⠀⠉⢹⡄⠀⠀⠀⠛⠛⠋⠉⠹⡇ \033[0m
+\033[36m⠀⠀⠀⠀⢸⣿⣿⠀⠀⠀⣀⣠⣤⣤⣤⣤⣤⣤⣤⣼⣇⣀⣀⣀⣛⣛⣒⣲⢾⡷ \033[0m
+\033[36m⢀⠤⠒⠒⢼⣿⣿⠶⠞⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀⣼⠃ \033[0m
+\033[36m⢮⠀⠀⠀⠀⣿⣿⣆⠀⠀⠻⣿⡿⠛⠉⠉⠁⠀⠉⠉⠛⠿⣿⣿⠟⠁⠀⣼⠃⠀ \033[0m
+\033[36m⠈⠓⠶⣶⣾⣿⣿⣿⣧⡀⠀⠈⠒⢤⣀⣀⡀⠀⠀⣀⣀⡠⠚⠁⠀⢀⡼⠃⠀⠀ \033[0m
+\033[36m⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣭⣭⣭⣭⣭⣥⣤⣤⣤⣴⣟⠁\033[0m
+                    """)
+
+
 print('Selamat datang di "Kantong Ajaib!"')
 
 while (program):
-    perintah = input(">>> ")
+    print(colorStr(">>> ","red"),end='')
+    perintah = input()
     if perintah == "help":
         pass
         # printhelp()
     elif perintah == "login":
         if hasLogin:
-            print("Anda sudah login, exit terlebih dahulu untuk menggunakan akun lain")
+            print(colorStr("Anda sudah login, exit terlebih dahulu untuk menggunakan akun lain","red"))
         else:
             login() #dapet idUser
     else:
@@ -449,7 +507,7 @@ while (program):
                 if isAdmin:
                     register()
                 else:
-                    print("Hanya boleh diakses oleh admin ^_^")
+                    print("Maaf, hanya boleh diakses oleh admin ^_^")
                     pass #print() peringatan
             elif perintah == "carirarity":
                 cariRarity()
@@ -505,9 +563,25 @@ while (program):
             elif perintah == "exit":
                 # Diganti ajaaa gapapaa, ini cuma testing
                 exit()
+                print("""\
+                    
+\033[36m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣴⣶⣶⣶⣶⣶⠶⣶⣤⣤⣀⠀⠀⠀⠀⠀⠀ \033[0m
+\033[36m⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⣿⣿⣿⠁⠀⢀⠈⢿⢀⣀⠀⠹⣿⣿⣿⣦⣄⠀⠀⠀ \033[0m
+\033[36m⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⠿⠀⠀⣟⡇⢘⣾⣽⠀⠀⡏⠉⠙⢛⣿⣷⡖⠀ \033[0m
+\033[36m⠀⠀⠀⠀⠀⣾⣿⣿⡿⠿⠷⠶⠤⠙⠒⠀⠒⢻⣿⣿⡷⠋⠀⠴⠞⠋⠁⢙⣿⣄ \033[0m
+\033[36m⠀⠀⠀⠀⢸⣿⣿⣯⣤⣤⣤⣤⣤⡄⠀⠀⠀⠀⠉⢹⡄⠀⠀⠀⠛⠛⠋⠉⠹⡇ \033[0m
+\033[36m⠀⠀⠀⠀⢸⣿⣿⠀⠀⠀⣀⣠⣤⣤⣤⣤⣤⣤⣤⣼⣇⣀⣀⣀⣛⣛⣒⣲⢾⡷ \033[0m
+\033[36m⢀⠤⠒⠒⢼⣿⣿⠶⠞⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀⣼⠃ \033[0m
+\033[36m⢮⠀⠀⠀⠀⣿⣿⣆⠀⠀⠻⣿⡿⠛⠉⠉⠁⠀⠉⠉⠛⠿⣿⣿⠟⠁⠀⣼⠃⠀ \033[0m
+\033[36m⠈⠓⠶⣶⣾⣿⣿⣿⣧⡀⠀⠈⠒⢤⣀⣀⡀⠀⠀⣀⣀⡠⠚⠁⠀⢀⡼⠃⠀⠀ \033[0m
+\033[36m⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣭⣭⣭⣭⣭⣥⣤⣤⣤⣴⣟⠁\033[0m
+                                    """)
             elif perintah == "gacha":
                 gacha()
             else:
-                print("Input anda tidak valid, ketik help untuk mendapatkan daftar input yang valid") #diganti nanti          
+                print(colorStr("Input anda tidak valid, ketik help untuk mendapatkan daftar input yang valid","red")) #diganti nanti 
+                #print("Berikut merupakan input yang valid")
+                #help()        
         else:
-            print("Anda harus login terlebih dahulu")
+            print(colorStr("Anda harus login terlebih dahulu","red"))
+            
