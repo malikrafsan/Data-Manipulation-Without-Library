@@ -46,4 +46,4 @@ def pinjam():
     id_peminjaman = 'GBH' + str(len(gadget_borrow_history))
     
     gadget_borrow_history.append([id_peminjaman, idUser, id_item, date_string, amount])
-'''Di gadget_borrow_history nya ada kolom baru tulisannya is_returned (cek di GDocs spek tubes) tapi belum dibuat append bagian kolom is_returned nya'''
+#Belum Selesai, di gadget_borrow_history nya ada kolom baru tulisannya is_returned (cek di GDocs spek tubes) tapi belum dibuat append bagian kolom is_returned nya
