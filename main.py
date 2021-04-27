@@ -7,6 +7,17 @@ def register():
     
     nama = input("Masukkan nama: ")
     username = input("Masukkan username: ")
+    notUnik = True
+    while notUnik:
+        notUnik = False
+        for i in range(len(user)):
+            if user[i][1] == username:
+                notUnik = True
+                print()
+                print("Ssername telah digunakan oleh user lain")
+                print("Silakan input username yang berbeda")
+                print()
+                username = input("Masukkan username: ")
     password = input("Masukkan password: ")
     alamat = input("Masukkan alamat: ")
     
@@ -28,18 +39,24 @@ def login():
     global isAdmin
     global idUser
     
-    username = input("Masukkan username: ")
-    password = input("Masukkan password: ")
-    print()
-    for i in range(len(user)):
-        if (username == user[i][1]) and (str(hashing(password)) == str(user[i][4])): #belum dihash
-            hasLogin = True
-            idUser = user[i][0]
-            print("Selamat datang " + user[i][2] + " ^_^")
-            if user[i][5] == "Admin":
-                isAdmin = True
-    if not hasLogin:
-        print("Username atau password Anda tidak cocok")
+    while True:
+        username = input("Masukkan username: ")
+        password = input("Masukkan password: ")
+        print()
+        for i in range(len(user)):
+            if (username == user[i][1]) and (str(hashing(password)) == str(user[i][4])): #belum dihash
+                hasLogin = True
+                idUser = user[i][0]
+                print("Selamat datang " + Bold(user[i][2]) + " ^_^")
+                if user[i][5] == "Admin":
+                    isAdmin = True
+                break
+        if not hasLogin:
+            print("Username atau password Anda tidak cocok")
+            print("Silakan masukkan kembali username dan password")
+            print()
+        else:
+            break
         
 # ============================ F3 ========================================
 def cariRarity():
@@ -58,46 +75,137 @@ def cariRarity():
             print("Tahun ditemukan  :", gadget[i][5])
             print()
 
+# ============================ F4 ========================================
+def caritahun():
+  while True:
+      try:
+        tahun = int(input("Masukkan tahun: "))
+        kategori = input("Masukkan kategori: ")
+        found = False
+
+        print()
+        print("Hasil pencarian: ")
+        print()
+        
+        if kategori == "=":
+          for i in range(1,len(gadget)):
+            if gadget[i][5] == tahun:
+              print(f"Nama: {gadget[i][1]}")
+              print(f"Deskripsi: {gadget[i][2]}")
+              print(f"Jumlah: {gadget[i][3]}")
+              print(f"Rarity: {gadget[i][4]}")
+              print(f"Tahun Ditemukan: {gadget[i][5]}")
+              print()
+              found = True
+        elif kategori == "<":
+          for i in range(1, len(gadget)):
+            if gadget[i][5] < tahun:
+              print(f"Nama: {gadget[i][1]}")
+              print(f"Deskripsi: {gadget[i][2]}")
+              print(f"Jumlah: {gadget[i][3]}")
+              print(f"Rarity: {gadget[i][4]}")
+              print(f"Tahun Ditemukan: {gadget[i][5]}")
+              print()
+              found = True
+        elif kategori == ">":
+          for i in range(1, len(gadget)):
+            if gadget[i][5] > tahun:
+              print(f"Nama: {gadget[i][1]}")
+              print(f"Deskripsi: {gadget[i][2]}")
+              print(f"Jumlah: {gadget[i][3]}")
+              print(f"Rarity: {gadget[i][4]}")
+              print(f"Tahun Ditemukan: {gadget[i][5]}")
+              print()
+              found = True
+        elif kategori == "<=":
+          for i in range(1, len(gadget)):
+            if gadget[i][5] <= tahun:
+              print(f"Nama: {gadget[i][1]}")
+              print(f"Deskripsi: {gadget[i][2]}")
+              print(f"Jumlah: {gadget[i][3]}")
+              print(f"Rarity: {gadget[i][4]}")
+              print(f"Tahun Ditemukan: {gadget[i][5]}")
+              print()
+              found = True
+        elif kategori == ">=":
+          for i in range(1, len(gadget)):
+            if gadget[i][5] >= tahun:
+              print(f"Nama: {gadget[i][1]}")
+              print(f"Deskripsi: {gadget[i][2]}")
+              print(f"Jumlah: {gadget[i][3]}")
+              print(f"Rarity: {gadget[i][4]}")
+              print(f"Tahun Ditemukan: {gadget[i][5]}")
+              print()
+              found = True
+        if found == False:
+              print("Tidak ada gadget yang ditemukan")
+      except ValueError:
+        print()
+      else:
+        break
+
 # ============================ F5 ========================================
 def tambahItem():
     # Khusus admin, nanti diberi validasi di main program
-    print()
-    ID = input("Masukkan ID: ")
     
     lanjut = False
-    if (ID[0] == 'G'):
-        if IDItemAda(gadget,ID):
-            print()
-            print("Gagal menambahkan item karena ID sudah ada.")
+    while not lanjut:
+        print()
+        ID = input("Masukkan ID: ")
+        if (ID[0] == 'G'):
+            if IDItemAda(gadget,ID):
+                print()
+                print("Gagal menambahkan item karena ID sudah ada.")
+            else:
+                lanjut = True
+        elif (ID[0] == 'C'):
+            if IDItemAda(consumable,ID):
+                print()
+                print("Gagal menambahkan item karena ID sudah ada.")
+            else:
+                lanjut = True
         else:
-            lanjut = True
-    elif (ID[0] == 'C'):
-        if IDItemAda(consumable,ID):
-            print()
-            print("Gagal menambahkan item karena ID sudah ada.")
-        else:
-            lanjut = True
-    else:
-        print("Gagal menambahkan item karena ID tidak valid.") # asumsi ID diawali huruf besar (kapitalisasi benar)
+            print("Gagal menambahkan item karena ID tidak valid.") # asumsi ID diawali huruf besar (kapitalisasi benar)
     
     if lanjut:
         nama = input("Masukkan Nama: ")
         deskripsi = input("Masukkan Deskripsi: ")
-        jumlah = int(input("Masukkan Jumlah: "))
-        rarity = input("Masukkan Rarity: ")
-        
-        daftar_rarity = "CBAS"
-        if rarity in daftar_rarity:
-            arrTambahItem = [ID,nama,deskripsi,jumlah,rarity]
-            if ID[0] == 'G':
-                tahun = int(input("Masukkan tahun ditemukan: "))
-                arrTambahItem.append(tahun)
-                gadget.append(arrTambahItem)
+        isNumber = False
+        while not isNumber:
+            jumlah = input("Masukkan Jumlah: ")
+            try:
+                jumlah = int(jumlah)
+                isNumber = True
+            except:
+                ValueError
+                print("Jumlah harus berupa bilangan integer, silakan masukkan kembali")
+                print()
+        isRarity = False
+        while not isRarity:
+            rarity = input("Masukkan Rarity: ")
+            if rarity in "CBAS":
+                break
             else:
-                consumable.append(arrTambahItem)
-            print("Item telah berhasil ditambahkan ke database.")
+                print("Rarity harus berupa karakter C, B, A, atau S")
+                print()
+        
+        arrTambahItem = [ID,nama,deskripsi,jumlah,rarity]
+        if ID[0] == 'G':
+            isTahun = False
+            while not isTahun:
+                tahun = input("Masukkan tahun ditemukan: ")
+                try:
+                    tahun = int(tahun)
+                    break
+                except:
+                    ValueError
+                    print("Tahun harus berupa bilangan integer, silakan masukkan kembali")
+                    print()
+            arrTambahItem.append(tahun)
+            gadget.append(arrTambahItem)
         else:
-            print("Input rarity tidak valid!")
+            consumable.append(arrTambahItem)
+        print("Item telah berhasil ditambahkan ke database.")
 
 # ============================ F6 ========================================
 def hapusItem():
@@ -127,6 +235,73 @@ def hapusItem():
     else:
         print()
         print("Tidak ada item dengan ID tersebut.")
+
+# ============================ F7 ========================================
+def ubahjumlah():
+    id_item = input("Masukan ID: ")
+    change = int(input("Masukkan Jumlah: "))
+    found = False
+    indeks_found = None
+    
+    if id_item[0] == 'G':
+        for i in range(1, len(gadget)):
+            if gadget[i][0] == id_item:
+                found = True
+                indeks_found = i
+            if found == True:
+                break
+    
+        if indeks_found == None:
+            print("Tidak ada item dengan ID tersebut!")
+        else: # indeks_found ada
+            before = gadget[indeks_found][3]
+        
+            if before + change < 0:
+                print(f"{change} {gadget[indeks_found][1]} gagal dibuang karena stok kurang. Stok sekarang: {before} (< {change})")
+            elif before + change >= 0:
+                gadget[indeks_found][3] = gadget[indeks_found][3] + change
+                if change >= 0:
+                    print(f"{change} {gadget[indeks_found][1]} berhasil ditambahkan. Stok sekarang: {gadget[indeks_found][3]}")
+                elif change < 0:
+                    print(f"{abs(change)} {gadget[indeks_found][1]} berhasil dibuang. Stok sekarang: {gadget[indeks_found][3]}")
+
+    elif id_item[0] == 'C':
+        for i in range(1, len(consumable)):
+            if consumable[i][0] == id_item:
+                found = True
+                indeks_found = i
+            if found == True:
+                break
+    
+        if indeks_found == None:
+            print("Tidak ada item dengan ID tersebut!")
+        else: # indeks_found ada
+            before = consumable[indeks_found][3]
+        
+            if before + change < 0:
+                print(f"{change} {consumable[indeks_found][1]} gagal dibuang karena stok kurang. Stok sekarang: {before} (< {change})")
+            elif before + change >= 0:
+                consumable[indeks_found][3] = consumable[indeks_found][3] + change
+                if change >= 0:
+                    print(f"{change} {consumable[indeks_found][1]} berhasil ditambahkan. Stok sekarang: {consumable[indeks_found][3]}")
+                elif change < 0:
+                    print(f"{abs(change)} {consumable[indeks_found][1]} berhasil dibuang. Stok sekarang: {consumable[indeks_found][3]}")
+    
+    else:
+        print("Tidak ada item dengan ID tersebut!")
+
+# ============================ F10 ========================================
+
+"""def mintaConsumable():
+    ID = input("Masukkan ID item: ")
+    jumlah = input("Jumlah: ")
+    tanggal = input("Tanggal permintaan: ") #belum divalidasi
+    arrMintaConsumable = [ID,jumlah,tanggal]
+    consumable.append(arrMintaConsumable)
+    print("")
+    print(f"Item {ID} (x{jumlah}) telah berhasil diambil!")"""
+
+
 
 # ============================ F11 ========================================
 def riwayatPinjam():
@@ -422,10 +597,11 @@ def cariID(data,ID):
 
 # Mengecek ada tidaknya item
 def IDItemAda(data,ID):
-    if cariID(data,ID) == 0:
-        return False
-    else:
-        return True
+    Ada = False
+    for i in range(len(data)):
+        if data[i][0] == ID:
+            return True
+    return False
 
 # Mencari data berdasarkan index (generalisasi cariID)
 def cariData(data,dicari,index):
@@ -454,6 +630,15 @@ def colorStr(string,color):
     else:
         return string
     return warna + string + '\033[0m'
+
+# Memvalidasi input tanggal
+def tglValid(date):
+    date_format = '%d/%m/%Y'
+    try:
+        datetime.datetime.strptime(date, date_format)
+        return True
+    except ValueError:
+        return False
 
 # ============================== MAIN PROGRAM =======================================
 
@@ -512,7 +697,7 @@ while (program):
             elif perintah == "carirarity":
                 cariRarity()
             elif perintah == "caritahun":
-                pass #caritahun()
+                caritahun()
             elif perintah == "tambahitem":
                 if isAdmin:
                     tambahItem()
@@ -525,7 +710,7 @@ while (program):
                     pass #print() peringatan
             elif perintah == "ubahjumlah":
                 if isAdmin:
-                    pass #ubahJumlah()
+                    ubahjumlah()
                 else:    
                     pass #print() peringatan
             elif perintah == "pinjam":
@@ -540,7 +725,7 @@ while (program):
                     pass #print() peringatan
             elif perintah == "minta":
                 if not isAdmin:
-                    pass #minta()
+                    mintaConsumable()
                 else:
                     pass #print() peringatan
             elif perintah == "riwayatpinjam":
@@ -580,6 +765,7 @@ while (program):
                 gacha()
             else:
                 print(colorStr("Input anda tidak valid, ketik help untuk mendapatkan daftar input yang valid","red")) #diganti nanti 
+                print()
                 #print("Berikut merupakan input yang valid")
                 #help()        
         else:

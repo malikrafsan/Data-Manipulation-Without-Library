@@ -14,3 +14,24 @@ def riwayatPinjam(idUser):
         if gadget_borrow_history[i][1] == idUser:
             namaGadget = gadget[cariID(gadget,gadget_borrow_history[i][2])][1]
             cetakRiwayat(i,namaUser,namaGadget)
+
+def mintaCon():
+    ID = input("Masukkan ID item: ")
+    while not IDItemAda(consumable, ID):
+        print()
+        print("ID item tidak tersedia, silakan inputkan kembali")
+        ID = input("Masukkan ID item: ")
+    jumlah = input("Jumlah: ")
+    while not jumlahValid(consumable,ID,jumlah):
+        
+
+def jumlahValid(data,ID,jumlahAmbil):
+    if jumlahAmbil > 0:
+        for i in range(len(data)):
+            if data[i][0] == ID:
+                if data[i][3] < jumlahAmbil:
+                    return False
+                else:
+                    return True
+    else:
+        return False

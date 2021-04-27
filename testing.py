@@ -194,5 +194,39 @@ def riwayatPinjamPrint(count):
         if lanjut == 'Y':
             count += 5
             riwayatPinjamPrint(count)
+    print()
         
-riwayatPinjam()
+#riwayatPinjam()
+
+import F10
+
+#F10.mintaConsumable()
+"""
+import datetime
+date_string = '2017-10-21'
+date_format = '%Y-%m-%d'
+try:
+    date_obj = datetime.datetime.strptime(date_string, date_format)
+    print(date_obj)
+except ValueError:
+    print("Incorrect data format, should be YYYY-MM-DD")
+"""
+"""import argparse
+parser = argparse.ArgumentParser(description="Menerima input nama folder")
+parser.add_argument("folder", type=str, help="echo the string you use here")
+
+parent = os.getcwd()
+directory = parser.parse_args().folder
+
+path = os.path.join(parent, directory)
+print(path)
+#os.chdir()"""
+
+def cariID(data,ID):
+    for i in range(len(data)):
+        if data[i][0] == ID:
+            return i
+
+print("AAAAA")
+cariID(gadget,"G100")
+print("AAAA")
