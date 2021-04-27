@@ -19,5 +19,17 @@ def tglValid(date):
     except ValueError:
         return False
 
-tgl = input("Masukkan tanggal: ")
-print(tglValid(tgl))
+#tgl = input("Masukkan tanggal: ")
+#print(tglValid(tgl))
+
+lst = "register,login,caricarity,caritahun,tambahitem,hapusitem,ubahjumlah,pinjam,kembalikan,minta,riwayatpinjam,riwayatkembali,riwayatambil,save,help,exit"
+mir = []
+kata = ""
+for i in range(len(lst)):
+    if lst[i] == ',':
+        mir.append(kata)
+        kata = ""
+    else:
+        kata += lst[i]
+
+print(mir)
