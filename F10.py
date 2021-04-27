@@ -1,12 +1,26 @@
 def mintaConsumable():
-    ID = input("Masukkan ID item: ")
+    next = False
+    while not next:
+        ID = input("Masukkan ID item: ")
+            if (ID[0] == 'G'):
+                if IDItemAda(gadget,ID):
+                    next = True
+                else:
+                    print("ID tidak valid!")
+            elif (ID[0] = 'C'):
+                if IDItemAda(consumable,ID):
+                    next = True
+                else:
+                    print("ID tidak valid!")
+            else:
+                print("ID tidak valid!")
+    # validasi ID
     jumlah = int(input("Jumlah: "))
-    # validasi jumlah
     while (jumlah<=0):
         print("Masukan tidak valid!")
         jumlah = int(input("Jumlah: "))
+    # validasi jumlah
     valid_date = False
-    # validasi tanggal
     while not valid_date:
         tanggal = input("Tanggal permintaan: ")
         try:
@@ -15,12 +29,11 @@ def mintaConsumable():
         except ValueError:
             valid_date = False
             print("Masukan tidak valid!")
-    global isAvailable
+    # validasi tanggal
     isAvailable = False
-    consumabledata1 = load_data("consumable.csv")
-    consumabledata = consumabledata1[1]
+    consumable = consumabledata[1]
     #print(consumabledata)
-    for consumable in consumabledata :
+    for consumable in consumabledata:
         if consumable[0] == iditem :
             isAvailable = True
             iditem = consumable[1]
@@ -33,4 +46,3 @@ def mintaConsumable():
             else:
                 print("")
                 print(f"Item {ID} (x{jumlah}) telah berhasil diambil!")
-                save_data("comsumable_history")
