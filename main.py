@@ -492,7 +492,39 @@ def riwayatPinjamPrint(count):
         if lanjut == 'Y':
             count += 5
             riwayatPinjamPrint(count)
+            
+# ============================ F12 ========================================
+def riwayatKembali():
+    count = 0
+    riwayatKembaliPrint(count)
 
+def riwayatKembaliPrint(count):
+    returnSort = sorted(gadget_return_history[count+1:], key = lamda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True))
+    lanjutkan = True
+    for i in range(5):
+        try:
+            namaUser = user[cariID(user,returnSort[i][1])][2]
+            namaGadget = gadget[cariID(gadget,returnSort[i][2])][1]
+            print()
+            print(i)
+            print("ID Pengembalian      : " + returnSort[i][1])
+            print("Nama Pengambil       : " + namaUser)
+            print("Nama Gadget          : " + namaGadget)
+            print("Tanggal Pengembalian : " + returnSort[i][3])
+            print("Jumlah               : " + str(returnSort[i][4]))
+        except:
+            IndexError
+            print()
+            print("Data sudah habis")
+            lanjutkan = False
+            break
+    if lanjutkan and len(returnSort) != 5:
+        print()
+        next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+        if next == 'Y':
+            count += 5
+            riwayatKembaliPrint(count)
+            
 # ============================ F13 ========================================
 def riwayatConsumable():
     count = 0
@@ -509,7 +541,7 @@ def riwayatConsumablePrint(count):
             print("ID Pengambilan       : " + consumableSort[i][1])
             print("Nama Pengambil       : " + namaUser)
             print("Nama Consumable      : " + namaConsumable)
-            print("Tanggal Pengembalian : " + consumableSort[i][3])
+            print("Tanggal Pengambilan  : " + consumableSort[i][3])
             print("Jumlah               : " + str(consumableSort[i][4]))
         except:
             IndexError
