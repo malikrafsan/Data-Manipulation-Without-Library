@@ -1,4 +1,5 @@
 def kembalikan():
+    '''Fungsinya belum pake yang pengembalian sebagian, jadi fungsi bonus yg FB02 belum terealisasi, nanti dicoba dulu, kalau bisa nanti diupdate, kalau engga berarti pake F09 tanpa bonus'''
     # Menampilkan ke user gadget yang pernah ia pinjam, asumsi user pasti pernah meminjam barang
     personal_borrow_not_returned = []
     for a in range(len(gadget_borrow_history)):
