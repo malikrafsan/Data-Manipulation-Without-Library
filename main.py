@@ -2,11 +2,32 @@ import os; import sys; import math; import time; import argparse; import datetim
 
 # ============================ F1 ========================================
 def register():
-    # Belum selesai, belum dikasih validasi username unik
-    global user
+    # Menambahkan data user baru ke dalam database
     
+    # input/output -> user : array of array of string and integer 
+    # I.S. matriks data user terdefinisi
+    # F.S. matriks data user ditambahkan data user baru
+    
+    # KAMUS LOKAL
+    # nama, username, password, alamat, idUser : string
+    # notUnik : boolean
+    # i, count : integer
+    # register : array of array of string
+    
+    # Variable global
+    global user 
+    
+    # Function / Procedure
+    # hashing(password : string) -> integer
+    # Meng-hash password user menggunakan metode Polynomial Rolling Hash
+    # I.S. password yang belum di hash terdefinisi
+    # F.S. password ter-hash
+    
+    # ALGORITMA
     nama = input("Masukkan nama: ")
     username = input("Masukkan username: ")
+    
+    # Validasi username unik
     notUnik = True
     while notUnik:
         notUnik = False
@@ -14,40 +35,77 @@ def register():
             if user[i][1] == username:
                 notUnik = True
                 print()
-                print("Ssername telah digunakan oleh user lain")
+                print("Username telah digunakan oleh user lain")
                 print("Silakan input username yang berbeda")
                 print()
                 username = input("Masukkan username: ")
+    # notUnik == False
+    
     password = input("Masukkan password: ")
     alamat = input("Masukkan alamat: ")
     
+    # Pembuatan idUSer
     count = 0
     for i in range(len(user)):
         if user[i][0][0] == 'U':
             count += 1
-    
     id_user = "U" + str(count + 1)
     
+    # Menambahkan data user baru ke dalam matriks data user
     register = [[id_user,username,nama,alamat,hashing(password),"User"]]
-
     user += register
+    
     print("User", username, "telah berhasil register ke dalam Kantong Ajaib.")
 
 # ============================ F2 ========================================
 def login():
+    # Melakukan prosedur login ke program dengan mengecek apakah data yang diinputkan
+    # sudah terdaftar di database
+    
+    # input ->  user : array of array of string and integer, 
+    #           hasLogin, isAdmin : boolean 
+    #           idUser : string
+    # output -> hasLogin, isAdmin : boolean
+    
+    # I.S.  matriks data user, variable hasLogin, isAdmin, dan idUser terdefinisi
+    # F.S.  mengubah variable hasLogin jika username dan password sesuai dengan data
+    #       dan isAdmin jika rolenya adalah admin
+    
+    # KAMUS LOKAL
+    # username, password : string
+    # i : integer
+    # rolling : boolean
+    
+    # Variable global
     global hasLogin
     global isAdmin
     global idUser
     
-    while True:
+    # Function / Procedure
+    # hashing(password : string) -> integer
+    # Meng-hash password user menggunakan metode Polynomial Rolling Hash
+    # I.S. password yang belum di hash terdefinisi
+    # F.S. password ter-hash
+    
+    # Bold(text : string) -> string
+    # Mengubah text menjadi terlihat bold jika di-print
+    # I.S. text terdefinisi
+    # F.S. text diberi 'kode' yang jika di-print text menjadi terlihat bold
+    
+    # ALGORITMA
+    rolling = True
+    while rolling:
         username = input("Masukkan username: ")
         password = input("Masukkan password: ")
         print()
         for i in range(len(user)):
-            if (username == user[i][1]) and (str(hashing(password)) == str(user[i][4])): #belum dihash
+            # Mengecek apakah data yang diinputkan telah terdaftar di database
+            if (username == user[i][1]) and (str(hashing(password)) == str(user[i][4])):
                 hasLogin = True
                 idUser = user[i][0]
                 print("Selamat datang " + Bold(user[i][2]) + " ^_^")
+                
+                # Mengecek apakah rolenya Admin
                 if user[i][5] == "Admin":
                     isAdmin = True
                 break
@@ -56,16 +114,32 @@ def login():
             print("Silakan masukkan kembali username dan password")
             print()
         else:
-            break
+            rolling = False
+    # rolling == False
         
 # ============================ F3 ========================================
 def cariRarity():
-    rarity = input("Masukkan rarity: ")
+    # Mencari gadget yang memiliki rarity sesuai yang diinputkan
     
+    # input -> gadget : array of array of string and integer
+    
+    # I.S. matriks data gadget terdefinisi
+    # F.S. tercetak ke layar data gadget yang memiliki rarity sesuai yang diinputkan
+    
+    # KAMUS LOKAL
+    # rarity : string
+    # i : integer
+    # ditemukan : boolean
+    
+    # Function / Procedure
+    
+    # ALGORITMA
+    rarity = input("Masukkan rarity: ")
     print()
     print("Hasil pencarian: ")
     print()
     
+    ditemukan = False
     for i in range(len(gadget)):
         if gadget[i][4] == rarity:
             print("Nama             :", gadget[i][1])
@@ -74,9 +148,26 @@ def cariRarity():
             print("Rarity           :", gadget[i][4])
             print("Tahun ditemukan  :", gadget[i][5])
             print()
-
+            ditemukan = True
+    if not ditemukan:
+        print("Tidak ada gadget yang memiliki rarity", rarity)
+        
 # ============================ F4 ========================================
 def caritahun():
+  # Mencari gadget berdasarkan tahun ditemukan dan kategorinya
+  
+  # input -> gadget : array of array of string and integer
+  # I.S. : matriks data gadget terdefinisi
+  # F.S. : tercetak ke layar data gadget sesuai input tahun ditemukan dan kategorinya
+  
+  # KAMUS LOKAL
+  # tahun, i : integer
+  # kategori : string
+  # found : boolean
+  
+  # Function / Procedure
+  
+  # ALGORITMA
   while True:
       try:
         tahun = int(input("Masukkan tahun: "))
@@ -139,105 +230,175 @@ def caritahun():
               found = True
         if found == False:
               print("Tidak ada gadget yang ditemukan")
+              print()
+
+      # Memvalidasi input tahun, dan mencegah terjadinya ValueError
       except ValueError:
+        print("Tahun yang diinputkan harus berupa bilangan bulat")
         print()
       else:
         break
 
 # ============================ F5 ========================================
 def tambahItem():
-    # Khusus admin, nanti diberi validasi di main program
+    # Menambahkan data item baru ke database
+
+    # input ->  gadget, consumable : array of array of string and integer
+    # output -> gadget, consumable : array of array of string and integer
     
+    # I.S. : matriks data gadget dan consumable telah terdefinisi
+    # F.S. : data item baru dimasukkan ke dalam database
+
+    # KAMUS LOKAL
+    # lanjut : boolean
+
+    # Function / Procedure
+    # IDItemAda(data : array of array of string and integer, ID : string) -> boolean
+    # Mengecek apakah ID ada pada data
+    # I.S. data dan ID terdefinisi
+    # F.S. Mengembalikan True jika ID item ada di data dan False jika sebaliknya
+
+    # ALGORITMA
+    # Validasi ID
     lanjut = False
     while not lanjut:
         print()
         ID = input("Masukkan ID: ")
         if (ID[0] == 'G'):
             if IDItemAda(gadget,ID):
-                print()
                 print("Gagal menambahkan item karena ID sudah ada.")
             else:
                 lanjut = True
         elif (ID[0] == 'C'):
             if IDItemAda(consumable,ID):
-                print()
                 print("Gagal menambahkan item karena ID sudah ada.")
             else:
                 lanjut = True
         else:
-            print("Gagal menambahkan item karena ID tidak valid.") # asumsi ID diawali huruf besar (kapitalisasi benar)
+            # asumsi ID diawali huruf besar (kapitalisasi benar)
+            print("Gagal menambahkan item karena ID tidak valid.")
+
+    nama = input("Masukkan Nama: ")
+    deskripsi = input("Masukkan Deskripsi: ")
     
-    if lanjut:
-        nama = input("Masukkan Nama: ")
-        deskripsi = input("Masukkan Deskripsi: ")
-        isNumber = False
-        while not isNumber:
-            jumlah = input("Masukkan Jumlah: ")
+    # Validasi jumlah
+    isNumber = False
+    while not isNumber:
+        jumlah = input("Masukkan Jumlah: ")
+        try:
+            jumlah = int(jumlah)
+            isNumber = True
+        except:
+            ValueError
+            print("Jumlah harus berupa bilangan integer, silakan masukkan kembali")
+            print()
+    
+    # Validasi rarity
+    isRarity = False
+    while not isRarity:
+        rarity = input("Masukkan Rarity: ")
+        if rarity in "CBAS":
+            isRarity = True
+        else:
+            print("Rarity harus berupa karakter C, B, A, atau S")
+            print()
+    
+    arrTambahItem = [ID,nama,deskripsi,jumlah,rarity]
+    if ID[0] == 'G':
+        
+        # Validasi tahun
+        isTahun = False
+        while not isTahun:
+            tahun = input("Masukkan tahun ditemukan: ")
             try:
-                jumlah = int(jumlah)
-                isNumber = True
+                tahun = int(tahun)
+                break
             except:
                 ValueError
-                print("Jumlah harus berupa bilangan integer, silakan masukkan kembali")
+                print("Tahun harus berupa bilangan integer, silakan masukkan kembali")
                 print()
-        isRarity = False
-        while not isRarity:
-            rarity = input("Masukkan Rarity: ")
-            if rarity in "CBAS":
-                break
-            else:
-                print("Rarity harus berupa karakter C, B, A, atau S")
-                print()
-        
-        arrTambahItem = [ID,nama,deskripsi,jumlah,rarity]
-        if ID[0] == 'G':
-            isTahun = False
-            while not isTahun:
-                tahun = input("Masukkan tahun ditemukan: ")
-                try:
-                    tahun = int(tahun)
-                    break
-                except:
-                    ValueError
-                    print("Tahun harus berupa bilangan integer, silakan masukkan kembali")
-                    print()
-            arrTambahItem.append(tahun)
-            gadget.append(arrTambahItem)
-        else:
-            consumable.append(arrTambahItem)
-        print("Item telah berhasil ditambahkan ke database.")
+            # isTahun == True
+
+        arrTambahItem.append(tahun)
+        gadget.append(arrTambahItem)
+    else:
+        consumable.append(arrTambahItem)
+    
+    print("Item telah berhasil ditambahkan ke database.")
 
 # ============================ F6 ========================================
 def hapusItem():
-    ID = input("Masukkan ID item: ")
-    if ID[0] == 'G':
-        if IDItemAda(gadget,ID):
-            urutan = cariID(gadget,ID)
-            jawaban = input("Apakah anda yakin ingin menghapus " + gadget[urutan][1] + " (Y/N)? ")
-            if jawaban == 'Y':
-                gadget.pop(urutan)
-                print()
-                print("Item telah berhasil dihapus dari database.")
-        else:
-            print()
-            print("Tidak ada item dengan ID tersebut.")
-    elif ID[0] == 'C':
-        if IDItemAda(consumable,ID):
-            urutan = cariID(consumable,ID)
-            jawaban = input("Apakah anda yakin ingin menghapus " + consumable[urutan][1] + " (Y/N)? ")
-            if jawaban == 'Y':
-                consumable.pop(urutan)
-                print()
-                print("Item telah berhasil dihapus dari database.")
-        else:
-            print()
-            print("Tidak ada item dengan ID tersebut.")
-    else:
+    # Menghapus gadget dari database
+    
+    # input / output -> gadget : array of array of string and integer
+    
+    # I.S. matriks data gadget terdefinisi
+    # F.S. data yang diinputkan dihapus dari data gadget
+    
+    # KAMUS LOKAL
+    # ID : string
+    # urutan : integer
+    
+    # Function / Procedure
+    # validasiYN(jawaban : string) -> boolean
+    # Memvalidasi input dari user, harus 'Y' atau 'N'
+    # I.S. string terdefinisi
+    # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
+
+    # IDItemAda(data : array of array of string and integer, ID : string) -> boolean
+    # Mengecek apakah ID ada pada data
+    # I.S. data dan ID terdefinisi
+    # F.S. Mengembalikan True jika ID item ada di data dan False jika sebaliknya
+    
+    # ALGORITMA
+    # Validasi ID
+    rolling = True
+    while rolling:
         print()
-        print("Tidak ada item dengan ID tersebut.")
+        ID = input("Masukkan ID item: ")
+        if ID[0] == 'G':
+            if IDItemAda(gadget,ID):
+                urutan = cariID(gadget,ID)
+                jawaban = input("Apakah anda yakin ingin menghapus " + gadget[urutan][1] + " (Y/N)? ")
+                
+                # Validasi jawaban
+                while not validasiYN(jawaban):
+                    jawaban = input("Apakah anda yakin ingin menghapus " + gadget[urutan][1] + " (Y/N)? ")
+                    
+                if jawaban == 'Y':
+                    gadget.pop(urutan)
+                    print()
+                    print("Item telah berhasil dihapus dari database.")
+                else:
+                    print("Item tidak jadi dihapus dari database")
+                rolling = False
+            else:
+                print("Tidak ada item dengan ID tersebut.")
+        elif ID[0] == 'C':
+            if IDItemAda(consumable,ID):
+                urutan = cariID(consumable,ID)
+                jawaban = input("Apakah anda yakin ingin menghapus " + consumable[urutan][1] + " (Y/N)? ")
+
+                # Validasi jawaban
+                while not validasiYN(jawaban):
+                    jawaban = input("Apakah anda yakin ingin menghapus " + gadget[urutan][1] + " (Y/N)? ")
+
+                if jawaban == 'Y':
+                    consumable.pop(urutan)
+                    print()
+                    print("Item telah berhasil dihapus dari database.")
+                else:
+                    print("Item tidak jadi dihapus dari database")
+                rolling = False
+            else:
+                print("Tidak ada item dengan ID tersebut.")
+        else:
+            print("Tidak ada item dengan ID tersebut.")
+    # rolling == False
 
 # ============================ F7 ========================================
 def ubahjumlah():
+    
     id_item = input("Masukan ID: ")
     change = int(input("Masukkan Jumlah: "))
     found = False
@@ -407,7 +568,7 @@ def tryIntBool(data):
     return data
 
 
-def load(): 
+def load(folder): 
     global user
     global gadget
     global consumable
@@ -416,7 +577,12 @@ def load():
     global gadget_return_history
     global inventory_user
     
-    os.chdir('./csvFolder')
+    print("A")
+    path = './' + folder
+    print(path)
+    os.chdir('./' + str(folder))
+    print("A")
+    print(os.getcwd())
     user = load_data("user.csv")
     gadget = tryInt(load_data("gadget.csv"))
     consumable = tryInt(load_data("consumable.csv"))
@@ -661,8 +827,17 @@ def cariID(data,ID):
         if data[i][0] == ID:
             return i
 
-# Mengecek ada tidaknya item
+
 def IDItemAda(data,ID):
+    # Mengecek apakah ID ada pada data
+    # I.S. data dan ID terdefinisi
+    # F.S. Mengembalikan True jika ID item ada di data dan False jika sebaliknya
+    
+    # KAMUS LOKAL
+    # Ada : boolean
+    # i : integer
+    
+    # ALGORITMA
     Ada = False
     for i in range(len(data)):
         if data[i][0] == ID:
@@ -706,20 +881,51 @@ def tglValid(date):
     except ValueError:
         return False
 
+def validasiYN(string):
+    # Memvalidasi input dari user, harus 'Y' atau 'N'
+    # I.S. string terdefinisi
+    # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
+    
+    # KAMUS LOKAL
+    # string : string
+    
+    # ALGORITMA
+    if (string == 'Y') or (string == 'N'):
+        return True
+    else:
+        print("Jawaban harus 'Y' atau 'N' ")
+        print()
+        return False
+    
 # ============================== MAIN PROGRAM =======================================
 
 user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []; inventory_user = []
-idUser = ""; random=0; lstChance = [0,0,0,0]
+idUser = ""; random=0; lstChance = [0,0,0,0]; directory = ''
 lstPerintah = ['register', 'login', 'caricarity', 'caritahun', 'tambahitem', 'hapusitem', 'ubahjumlah', 'pinjam', 
                'kembalikan', 'minta', 'riwayatpinjam', 'riwayatkembali', 'riwayatambil', 'save', 'help']
 
+def arg():
+    global directory
+    
+    parser = argparse.ArgumentParser(description="Menerima input nama folder")
+    parser.add_argument("folder", type=str, help="echo the string you use here")
+    directory = parser.parse_args().folder
+"""    parent = os.getcwd()
+    directory = parser.parse_args().folder
+
+    path = os.path.join(parent, directory)
+    print(path)
+    #os.chdir('./' + directory)
+    #os.chdir('../')"""
+
+arg()
 program = True
 hasLogin = False
 isAdmin = False
 
 print("Loading...")
 time.sleep(2)
-load()
+load(directory)
 print()
 print("""\
 \033[93m __  __               __                          _______ __         __ __    \033[0m
