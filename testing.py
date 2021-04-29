@@ -295,4 +295,3 @@ def hashing(str):
         powerOfP = (powerOfP * P) % m
     return int(hashed)
 
-print(hashing("akunobi"))
