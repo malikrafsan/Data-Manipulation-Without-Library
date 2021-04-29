@@ -1,6 +1,15 @@
 def ubahjumlah():
     id_item = input("Masukan ID: ")
-    change = int(input("Masukkan Jumlah: "))
+    
+    marker = True
+    while marker:
+        try:
+            change = int(input("Masukkan Jumlah: "))
+            if type(change) == int:
+                marker = False
+        except ValueError:
+            print("Silahkan masukan kembali angka dengan benar")
+    
     found = False
     indeks_found = None
     
