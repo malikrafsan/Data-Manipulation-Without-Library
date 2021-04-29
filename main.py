@@ -499,7 +499,7 @@ def riwayatKembali():
     riwayatKembaliPrint(count)
 
 def riwayatKembaliPrint(count):
-    returnSort = sorted(gadget_return_history[count+1:], key = lamda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True))
+    returnSort = sorted(gadget_return_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
     lanjutkan = True
     for i in range(5):
         try:
@@ -599,8 +599,7 @@ def tryIntBool(data):
                     ValueError
     return data
 
-
-def load(folder): 
+def load(folder):
     global user
     global gadget
     global consumable
@@ -609,11 +608,9 @@ def load(folder):
     global gadget_return_history
     global inventory_user
     
-    print("A")
     path = './' + folder
     print(path)
     os.chdir('./' + str(folder))
-    print("A")
     print(os.getcwd())
     user = load_data("user.csv")
     gadget = tryInt(load_data("gadget.csv"))
@@ -623,6 +620,40 @@ def load(folder):
     gadget_return_history = tryInt(load_data("gadget_return_history.csv"))
     inventory_user = tryIntBool(load_data("inventory_user.csv"))
     os.chdir('../')
+
+def loading():
+    parser = argparse.ArgumentParser(description="""
+Program Tugas Besar IF1210 Kelompok 11 Kelas 10 Dasar Pemrograman
+\033[93mformat input : python main.py <nama-folder-csv>\033[0m
+""")
+    parser.add_argument("-f","--folder", type=str, help="Inputkan nama folder csv disini")  
+    if parser.parse_args().folder is None:
+        parser.error("""
+\033[91mNama folder csv tidak diinputkan!\033[0m
+\033[93mformat input : python main.py <nama-folder-csv>\033[0m""")
+        return
+    directory = parser.parse_args().folder
+    parent = os.getcwd()
+    path = os.path.join(parent, directory)
+    if not os.path.exists(path):
+        print("Nama folder yang diinputkan tidak ada")
+    else:
+        os.chdir('./' + directory)
+        lstFile = ["user.csv","gadget.csv","gadget_borrow_history.csv","gadget_return_history.csv","consumable.csv","consumable_history.csv"]
+        for files in lstFile:
+            if not fileExist(files):
+                print(files + " tidak tersedia di folder yang diinputkan")
+                return
+        if not fileExist('inventory_user.csv'):
+            print(colorStr("file inventory_user.csv tidak tersedia, program tetap bisa berjalan tetapi tidak dengan opsi gacha"))
+        os.chdir('../')
+        load(directory)
+        
+def fileExist(files):
+    if os.path.exists(files):
+        return True
+    else:
+        return False
 
 # ============================ F15 ========================================
 def save_data(file,data):
@@ -936,28 +967,15 @@ idUser = ""; random=0; lstChance = [0,0,0,0]; directory = ''
 lstPerintah = ['register', 'login', 'caricarity', 'caritahun', 'tambahitem', 'hapusitem', 'ubahjumlah', 'pinjam', 
                'kembalikan', 'minta', 'riwayatpinjam', 'riwayatkembali', 'riwayatambil', 'save', 'help']
 
-def arg():
-    global directory
-    
-    parser = argparse.ArgumentParser(description="Menerima input nama folder")
-    parser.add_argument("folder", type=str, help="echo the string you use here")
-    directory = parser.parse_args().folder
-"""    parent = os.getcwd()
-    directory = parser.parse_args().folder
-
-    path = os.path.join(parent, directory)
-    print(path)
-    #os.chdir('./' + directory)
-    #os.chdir('../')"""
-
-arg()
+#arg()
 program = True
 hasLogin = False
 isAdmin = False
 
+loading()
 print("Loading...")
 time.sleep(2)
-load(directory)
+
 print()
 print("""\
 \033[93m __  __               __                          _______ __         __ __    \033[0m
