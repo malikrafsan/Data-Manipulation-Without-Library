@@ -34,6 +34,7 @@ for i in range(len(lst)):
 
 print(mir)
 """
+"""
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -48,3 +49,27 @@ if args.foo and args.bar is None:
 
 print ("foo =", args.foo)
 print ("bar =", args.bar)
+"""
+
+import argparse
+
+parser = argparse.ArgumentParser()
+try:
+    parser.add_argument("<nama-folder>", type=str, help="Inputkan nama folder csv disini")
+except:
+    parser.error()
+    print("tes")
+parser.error("AAAAAAAAA")
+if parser.parse_args().folder is None:
+    
+    print("gaada folder")
+else:
+    print("Ada ngab")
+    print(parser.parse_args().folder)
+"""
+if args.foo and args.bar is None:
+    parser.error("--foo requires --bar. You did not specify bar.")
+
+print ("foo =", args.foo)
+print ("bar =", args.bar)
+"""
