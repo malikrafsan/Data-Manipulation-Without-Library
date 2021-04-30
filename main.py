@@ -627,6 +627,7 @@ def kembalikan():
                 break
             except ValueError:
                 print("Tanggal yang anda masukan salah. Silahkan masukan kembali tanggal dengan format DD/MM/YYYY")
+                print()
             
         # Membuat string dari gadget yang user ingin kembalikan
         id_returned_gadget = updated_unique_personal_borrow_not_returned[option - 1]
@@ -656,6 +657,9 @@ def kembalikan():
                 amount_returned = int(input(f"Berapa jumlah {gadget[markernya][1]} yang ingin anda kembalikan (maksimal {max_returned}): "))
                 if amount_returned > 0 and amount_returned <= max_returned:
                     break
+                else:
+                    print("Jumlah tidak sesuai")
+                    print()
             except ValueError:
                 print(f"Silahkan masukan kembali jumlah {gadget[markernya][1]} yang ingin dikembalikan dengan bilangan bulat")
                 
@@ -791,41 +795,6 @@ def riwayatPinjam():
             
 # ============================ F12 ========================================
 def riwayatKembali():
-    count = 0
-    riwayatKembaliPrint(count)
-
-def riwayatKembaliPrint(count):
-    borrowSort = sorted(gadget_borrow_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
-    returnSort = sorted(gadget_return_history[count+1:], key = lambda date: datetime.datetime.strptime(date[2], '%d/%m/%Y'),reverse=True)
-    lanjutkan = True
-    for i in range(5):
-        try:
-            namaUser = user[cariID(user,borrowSort[i][1])][2]
-            namaGadget = gadget[cariID(gadget,borrowSort[i][2])][1]
-
-            #returnSort[i][2]
-            print()
-            print(i)
-            print("ID Pengembalian      : " + returnSort[i][0])
-            print("Nama Pengambil       : " + namaUser)
-            print("Nama Gadget          : " + namaGadget)
-            print("Tanggal Pengembalian : " + returnSort[i][2])
-            print("Jumlah               : " + str(returnSort[i][3]))
-        except:
-            IndexError
-            print()
-            print("Data sudah habis")
-            lanjutkan = False
-            break
-    if lanjutkan and len(returnSort) != 5:
-        print()
-        next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
-        if next == 'Y':
-            count += 5
-            riwayatKembaliPrint(count)
-
-"""
-def riwayatKembali():
     rolling = True
     count = 0
     while rolling:
@@ -833,16 +802,23 @@ def riwayatKembali():
         lanjutkan = True
         for i in range(5):
             try:
-                namaUser = user[cariID(user,returnSort[i][1])][2]
-                namaGadget = gadget[cariID(gadget,returnSort[i][2])][1]
+                #cari id gadget dan id user
+                for line in range(len(gadget_borrow_history)):
+                    if returnSort[i][1] == gadget_borrow_history[line][0]:
+                        id_gadget = gadget_borrow_history[line][2]
+                        id_user = gadget_borrow_history[line][1]
+
+                namaUser = user[cariID(user,id_user)][2]
+                namaGadget = gadget[cariID(gadget,id_gadget)][1]
+
                 print()
-                print(i)
-                print("ID Pengembalian      : " + returnSort[i][1])
+                print("ID Pengembalian      : " + returnSort[i][0])
                 print("Nama Pengambil       : " + namaUser)
                 print("Nama Gadget          : " + namaGadget)
-                print("Tanggal Pengembalian : " + returnSort[i][3])
-                print("Jumlah               : " + str(returnSort[i][4]))
+                print("Tanggal Pengembalian : " + returnSort[i][2])
+                print("Jumlah               : " + str(returnSort[i][3]))
             except:
+                # Ketika data habis maka akan terjadi IndexError
                 IndexError
                 print()
                 print("Data sudah habis")
@@ -850,14 +826,17 @@ def riwayatKembali():
                 break
         if lanjutkan and len(returnSort) != 5:
             print()
-            next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
-            if next == 'Y':
+            nextInp = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+            # Validasi input
+            while not validasiYN(nextInp):
+                nextInp = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+            if nextInp == 'Y':
                 count += 5
             else:
                 rolling = False
         else:
             rolling = False
-"""
+
 # ============================ F13 ========================================
 def riwayatConsumable():
     # Menampilkan daftar pengambilan consumable yang telah dilakukan para user ke layar
