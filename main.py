@@ -413,7 +413,7 @@ def ubahjumlah():
     
     # Validasi jumlah
     isInteger = False
-    while isInteger:
+    while not isInteger:
         try:
             change = int(input("Masukkan Jumlah: "))
             isInteger = True
@@ -573,6 +573,9 @@ def kembalikan():
             option = int(input("Masukan nomor peminjaman: "))
             if option > 0 and option <= banyak:
                 syaratnya = False
+            else:
+                print("Nomor peminjaman harus sesuai")
+                print()
         except ValueError:
             print("Silahkan masukan kembali nomor dengan benar")
             
@@ -605,6 +608,7 @@ def kembalikan():
          
     # Menampilkan jika berhasil       
     print(f"Item {gadget[markernya][1]} (x{gadget_borrow_history[z][4]}) telah dikembalikan")
+    print()
     
     # Menambahkan gadget_return_history
     id_pengembalian = 'GRH' + str(len(gadget_return_history))
@@ -651,69 +655,75 @@ def riwayatPinjam():
                 count += 5
             else:
                 rolling = False
+        else:
+            rolling = False
             
 # ============================ F12 ========================================
 def riwayatKembali():
+    rolling = True
     count = 0
-    riwayatKembaliPrint(count)
-
-def riwayatKembaliPrint(count):
-    returnSort = sorted(gadget_return_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
-    lanjutkan = True
-    for i in range(5):
-        try:
-            namaUser = user[cariID(user,returnSort[i][1])][2]
-            namaGadget = gadget[cariID(gadget,returnSort[i][2])][1]
+    while rolling:
+        returnSort = sorted(gadget_return_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
+        lanjutkan = True
+        for i in range(5):
+            try:
+                namaUser = user[cariID(user,returnSort[i][1])][2]
+                namaGadget = gadget[cariID(gadget,returnSort[i][2])][1]
+                print()
+                print(i)
+                print("ID Pengembalian      : " + returnSort[i][1])
+                print("Nama Pengambil       : " + namaUser)
+                print("Nama Gadget          : " + namaGadget)
+                print("Tanggal Pengembalian : " + returnSort[i][3])
+                print("Jumlah               : " + str(returnSort[i][4]))
+            except:
+                IndexError
+                print()
+                print("Data sudah habis")
+                lanjutkan = False
+                break
+        if lanjutkan and len(returnSort) != 5:
             print()
-            print(i)
-            print("ID Pengembalian      : " + returnSort[i][1])
-            print("Nama Pengambil       : " + namaUser)
-            print("Nama Gadget          : " + namaGadget)
-            print("Tanggal Pengembalian : " + returnSort[i][3])
-            print("Jumlah               : " + str(returnSort[i][4]))
-        except:
-            IndexError
-            print()
-            print("Data sudah habis")
-            lanjutkan = False
-            break
-    if lanjutkan and len(returnSort) != 5:
-        print()
-        next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
-        if next == 'Y':
-            count += 5
-            riwayatKembaliPrint(count)
+            next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+            if next == 'Y':
+                count += 5
+            else:
+                rolling = False
+        else:
+            rolling = False
             
 # ============================ F13 ========================================
 def riwayatConsumable():
+    rolling = True
     count = 0
-    riwayatConsumablePrint(count)
-
-def riwayatConsumablePrint(count):
-    consumableSort = sorted(consumable_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
-    berikutnya = True
-    for i in range(5):
-        try:
-            namaUser = user[cariID(user,consumableSort[i][1])][2]
-            namaConsumable = consumable[cariID(consumable,consumableSort[i][2])][1]
+    while rolling:
+        consumableSort = sorted(consumable_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
+        berikutnya = True
+        for i in range(5):
+            try:
+                namaUser = user[cariID(user,consumableSort[i][1])][2]
+                namaConsumable = consumable[cariID(consumable,consumableSort[i][2])][1]
+                print()
+                print("ID Pengambilan       : " + consumableSort[i][1])
+                print("Nama Pengambil       : " + namaUser)
+                print("Nama Consumable      : " + namaConsumable)
+                print("Tanggal Pengambilan  : " + consumableSort[i][3])
+                print("Jumlah               : " + str(consumableSort[i][4]))
+            except:
+                IndexError
+                print()
+                print("Data sudah habis")
+                berikutnya = False
+                break
+        if berikutnya and len(consumableSort) != 5:
             print()
-            print("ID Pengambilan       : " + consumableSort[i][1])
-            print("Nama Pengambil       : " + namaUser)
-            print("Nama Consumable      : " + namaConsumable)
-            print("Tanggal Pengambilan  : " + consumableSort[i][3])
-            print("Jumlah               : " + str(consumableSort[i][4]))
-        except:
-            IndexError
-            print()
-            print("Data sudah habis")
-            berikutnya = False
-            break
-    if berikutnya and len(consumableSort) != 5:
-        print()
-        next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
-        if next == 'Y':
-            count += 5
-            riwayatConsumablePrint(count)
+            next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+            if next == 'Y':
+                count += 5
+            else:
+                rolling = False
+        else:
+            rolling = False
 
 # ============================ F14 ========================================
 def load_data(file):
@@ -758,10 +768,8 @@ def load(folder):
     global gadget_return_history
     global inventory_user
     
-    path = './' + folder
-    print(path)
     os.chdir('./' + str(folder))
-    print(os.getcwd())
+    
     user = load_data("user.csv")
     gadget = tryInt(load_data("gadget.csv"))
     consumable = tryInt(load_data("consumable.csv"))
@@ -916,6 +924,7 @@ def exit():
         isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (Y/N) ")
     if isSave == "Y":
         save()
+    print()
     print("Terima kasih telah menggunakan kantong ajaib ^_^")
     # Menghentikan program
     program = False
@@ -1254,6 +1263,7 @@ if not(directory == None):
         elif perintah == "login":
             if hasLogin:
                 print(colorStr("Anda sudah login, exit terlebih dahulu untuk menggunakan akun lain","red"))
+                print()
             else:
                 login()
         elif perintah == "exit":
@@ -1299,7 +1309,8 @@ if not(directory == None):
                     if isAdmin:
                         ubahjumlah()
                     else:    
-                        pass #print() peringatan
+                        print("Maaf, hanya boleh diakses oleh admin ^_^")
+                        print()
                 elif perintah == "pinjam":
                     if not isAdmin:
                         pinjam()
@@ -1314,7 +1325,7 @@ if not(directory == None):
                         print()
                 elif perintah == "minta":
                     if not isAdmin:
-                        pass#mintaConsumable()
+                        pass #mintaConsumable()
                     else:
                         print("Maaf, hanya boleh diakses oleh user ^_^")
                         print()
@@ -1326,7 +1337,7 @@ if not(directory == None):
                         print()
                 elif perintah == "riwayatkembali":
                     if isAdmin:    
-                        pass #riwayatKembali
+                        riwayatKembali()
                     else:
                         print("Maaf, hanya boleh diakses oleh admin ^_^")
                         print()
