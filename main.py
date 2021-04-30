@@ -406,7 +406,9 @@ def ubahjumlah():
     # F.S. jumlah item pada database berubah
     
     # KAMUS LOKAL
-    # id_item,
+    # id_item : string
+    # before, change, indeks_found: integer
+    # isInteger, found : boolean
     
     # ALGORITMA
     id_item = input("Masukan ID: ")
@@ -472,7 +474,21 @@ def ubahjumlah():
 
 # ============================ F8 ========================================
 def pinjam():
-    '''Validasi ID_Item'''
+    # Meminjam gadget sesuai id_item yang dimasukan dan akan mengurangi jumlah pada gadget dan menambahkan entri pada gadget_borrow_history
+    
+    # input/output -> gadget : array of array of string and integer
+    # input/output -> gadget_borrow_history : array of array of string, integer, and boolean
+    
+    # I.S. matriks data gadget dan gadget_borrow_history terdefinisi
+    # F.S. jumlah gadget pada data gadget berkurang dan terdapat entri baru pada gadget_borrow_history
+    
+    # KAMUS LOKAL
+    # id_item, id_peminjaman : string
+    # condition, found, syarat_terpenuhi_1 : boolean
+    # indeks, current_amount, amount : integer
+    
+    # ALGORITMA    
+    # Validasi ID_Item
     condition = True
     while condition:
         try:
@@ -490,26 +506,29 @@ def pinjam():
         except ValueError:
             print()
     
+    # Membuat array dari setiap gadget yang user pernah pinjam
     personal_borrow = []
     for a in range(len(gadget_borrow_history)):
         if gadget_borrow_history[a][1] == idUser:
             personal_borrow.append(gadget_borrow_history[a])
     
-    '''Cek apakah user pernah meminjam dan belum mengembalikan gadget yang sama'''
+    # Mengecek apakah user pernah meminjam dan belum mengembalikan gadget yang sama atau user belum pernah meminjam sama sekali dari gadget dengan id_item
+    # Syarat 1: User sudah mengembalikan gadget dengan id_item yang dimasukan secara utuh (tidak sebagian)
     syarat_terpenuhi_1 = False
     for i in range(len(personal_borrow)-1, 0, -1):
         if personal_borrow[i][2] == id_item:
             if personal_borrow[i][5] == True:
                 syarat_terpenuhi_1 = True
                 break
-    
+    # Syarat 2: User belum pernah sama sekali meminjam gadget dengan id_item inputan
     check = None
     for i in range(len(personal_borrow)):
         if personal_borrow[i][2] == id_item:
             check = 'Checked'
     
+    # Jika user sudah pernah mengembalikan secara lengkap gadget dengan id = id_item (atau) gadget dengan id = id item belum pernah ia pinjam sama sekali
     if syarat_terpenuhi_1 == True or check == None:
-        '''Validasi Tanggal'''
+        # Validasi Tanggal
         format = "%d/%m/%Y"
     
         while(True):
@@ -522,7 +541,7 @@ def pinjam():
                 print("Tanggal yang anda masukan salah. Silahkan masukan kembali tanggal dengan format DD/MM/YYYY")
                 print()
             
-        '''Validasi jumlah'''
+        # Validasi jumlah
         current_amount = gadget[indeks][3]
         terms = True
     
@@ -540,18 +559,33 @@ def pinjam():
             except ValueError:
                 print("Silahkan masukan kembali jumlah dengan angka yang benar")
     
-        '''Memasukan ke data gadget_borrow_history'''
+        # Memasukan ke data gadget_borrow_history
         id_peminjaman = 'GBH' + str(len(gadget_borrow_history))
     
         gadget_borrow_history.append([id_peminjaman, idUser, id_item, date_string, amount, False])
+    # Kondisi jika user pernah meminjam gadget dengan id = id_item, namun belum mengembalikannya
     else:
-        print("Maaf, anda pernah meminjam gadget yang sama dan belum mengembalikannya")
+        print("Maaf, anda pernah meminjam gadget yang sama dan belum mengembalikannya, anda harus mengembalikan secara keseluruhan gadget yang baru saja anda ingin pinjam")
         print()
 
 # ============================ F9 ========================================
 def kembalikan():
-    '''Fungsinya belum pake yang pengembalian sebagian, jadi fungsi bonus yg FB02 belum terealisasi, nanti dicoba dulu, kalau bisa nanti diupdate, kalau engga berarti pake F09 tanpa bonus'''
-    # Menampilkan ke user gadget yang pernah ia pinjam, asumsi user pasti pernah meminjam barang
+    # Mengembalikan gadget yang pernah dipinjam
+    
+    # input/output -> gadget : array of array of string and integer
+    # input/output -> gadget_borrow_history : array of array of string, integer, and boolean
+    # input/output -> gadget_return_history: array of array of string
+    
+    # I.S. matriks data gadget, gadget_borrow_history, dan gadget_return_history terdefinisi
+    # F.S. jumlah gadget pada data gadget berkurang dan terdapat entri baru pada gadget_borrow_history
+    
+    # KAMUS LOKAL
+    # id_returned_gadget, id_pengembalian : string
+    # syaratnya : boolean
+    # option, indeksnya, markernya, max_returned, total_amount_returned, total_amount_returned_updated, amount_returned : integer
+    
+    # ALGORITMA 
+    # Menampilkan ke user gadget yang pernah ia pinjam
     personal_borrow_not_returned = []
     for a in range(len(gadget_borrow_history)):
         if gadget_borrow_history[a][1] == idUser and gadget_borrow_history[a][5] == False:
@@ -560,60 +594,91 @@ def kembalikan():
     unique_personal_borrow_not_returned = set(personal_borrow_not_returned)
     updated_unique_personal_borrow_not_returned = list(unique_personal_borrow_not_returned)
     
-    for i in range(len(updated_unique_personal_borrow_not_returned)):
-        for j in range(len(gadget)):
-            if updated_unique_personal_borrow_not_returned[i] == gadget[j][0]:
-                print(f"{i + 1}. {gadget[j][1]}")
+    # Kondisi jika user pernah meminjam barang sebelumnya
+    if len(updated_unique_personal_borrow_not_returned) > 0:
+        # Menampilkan setiap gadget yang pernah dipinjam oleh user
+        for i in range(len(updated_unique_personal_borrow_not_returned)):
+            for j in range(len(gadget)):
+                if updated_unique_personal_borrow_not_returned[i] == gadget[j][0]:
+                    print(f"{i + 1}. {gadget[j][1]}")
                 
-    # Meminta user memilih opsi item sesuai nomor
-    banyak = len(updated_unique_personal_borrow_not_returned)
-    syaratnya = True
-    while(syaratnya):
-        try:
-            option = int(input("Masukan nomor peminjaman: "))
-            if option > 0 and option <= banyak:
-                syaratnya = False
-            else:
-                print("Nomor peminjaman harus sesuai")
-                print()
-        except ValueError:
-            print("Silahkan masukan kembali nomor dengan benar")
+        # Meminta user memilih opsi item sesuai nomor
+        banyak = len(updated_unique_personal_borrow_not_returned)
+        syaratnya = True
+        while(syaratnya):
+            try:
+                option = int(input("Masukan nomor peminjaman: "))
+                if option > 0 and option <= banyak:
+                    syaratnya = False
+            except ValueError:
+                print("Silahkan masukan kembali nomor dengan benar")
             
-    # Meminta user memasukan tanggal        
-    format = "%d/%m/%Y"
+        # Meminta user memasukan tanggal dan memvalidasinya        
+        format = "%d/%m/%Y"
     
-    while(True):
-        tanggal = input("Tanggal pengembalian: ").strip()
+        while(True):
+            tanggal = input("Tanggal pengembalian: ").strip()
         
-        try:
-            datetime.datetime.strptime(tanggal, format)
-            break
-        except ValueError:
-            print("Tanggal yang anda masukan salah. Silahkan masukan kembali tanggal dengan format DD/MM/YYYY")
+            try:
+                datetime.datetime.strptime(tanggal, format)
+                break
+            except ValueError:
+                print("Tanggal yang anda masukan salah. Silahkan masukan kembali tanggal dengan format DD/MM/YYYY")
             
-    # Mengupdate jumlah gadget:
-    id_returned_gadget = updated_unique_personal_borrow_not_returned[option - 1]
+        # Membuat string dari gadget yang user ingin kembalikan
+        id_returned_gadget = updated_unique_personal_borrow_not_returned[option - 1]
     
-    for z in range(len(gadget_borrow_history)-1, 0, -1):
-        if gadget_borrow_history[z][2] == id_returned_gadget and gadget_borrow_history[z][1] == idUser:
-            gadget_borrow_history[z][5] = True
-            indeksnya = z
-            break
-            
-    for n in range(len(gadget)):
-        if gadget[n][0] == id_returned_gadget:
-            gadget[n][3] = gadget[n][3] + gadget_borrow_history[z][4]
-            markernya = n
-            break
-         
-    # Menampilkan jika berhasil       
-    print(f"Item {gadget[markernya][1]} (x{gadget_borrow_history[z][4]}) telah dikembalikan")
-    print()
+        # Menelusuri entri gadget yang ingin user kembalikan pada data gadget_borrow_history
+        for z in range(len(gadget_borrow_history)-1, 0, -1):
+            if gadget_borrow_history[z][2] == id_returned_gadget and gadget_borrow_history[z][1] == idUser:
+                indeksnya = z
+                break
     
-    # Menambahkan gadget_return_history
-    id_pengembalian = 'GRH' + str(len(gadget_return_history))
-    gadget_return_history.append([id_pengembalian, gadget_borrow_history[z][0], tanggal])
-
+        # Menelusuri data gadget untuk mendapatkan sebagian informasi dari gadget yang ingin dikembalikan
+        for n in range(len(gadget)):
+            if gadget[n][0] == id_returned_gadget:
+                markernya = n
+                break
+    
+        # Menghitung jumlah semua yang pernah dikembalikan sebelumnya ditambahkan (jika ada)
+        total_amount_returned = 0
+        for an in range(len(gadget_return_history)):
+            if gadget_return_history[an][1] == gadget_borrow_history[indeksnya][0] and gadget_return_history[an][4] == 'applicable':
+                total_amount_returned = total_amount_returned + gadget_return_history[an][3]
+                
+        # Prompting user memasukan jumlah barang yang ingin ia kembalikan (baik sebagian atau keseluruhan)
+        max_returned = gadget_borrow_history[indeksnya][4] - total_amount_returned
+        while(True):
+            try:
+                amount_returned = int(input(f"Berapa jumlah {gadget[markernya][1]} yang ingin anda kembalikan (maksimal {max_returned}): "))
+                if amount_returned > 0 and amount_returned <= max_returned:
+                    break
+            except ValueError:
+                print(f"Silahkan masukan kembali jumlah {gadget[markernya][1]} yang ingin dikembalikan dengan bilangan bulat")
+                
+        # Menambahkan entri gadget_return_history
+        id_pengembalian = 'GRH' + str(len(gadget_return_history))
+        gadget_return_history.append([id_pengembalian, gadget_borrow_history[indeksnya][0], tanggal, amount_returned, 'applicable'])                
+        
+        # Total keseluruhan yang pernah dikembalikan sebelumnya ditambah dengan yang baru saja hendak dikembalikan
+        total_amount_returned_updated = total_amount_returned + amount_returned
+        
+        # Menambah jumlah pada data gadget sesuai jumlah yang dikembalikan
+        gadget[markernya][3] = gadget[markernya][3] + amount_returned
+        
+        # Mengubah kolom isReturned pada gadget_borrow_history menjadi True jika jumlah yang dipinjam sudah dikembalikan utuh
+        if gadget_borrow_history[indeksnya][4] - total_amount_returned_updated == 0:
+            gadget_borrow_history[indeksnya][5] = True
+            for m in range(len(gadget_return_history)):
+                if gadget_return_history[m][1] == gadget_borrow_history[indeksnya][0]:
+                    gadget_return_history[m][4] = 'not applicable'
+        
+        # Menampilkan nama gadget dan jumlah yang pernah ia pinjamm secara kesuluruhan     
+        print(f"Item {gadget[markernya][1]} (x{amount_returned}) telah dikembalikan")
+    
+    # Kondisi jika user belum pernah meminjam barang
+    else:
+        print("Anda belum pernah meminjam gadget sama sekali")
 # ============================ F10 ========================================
 
 """def mintaConsumable():
