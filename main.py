@@ -663,7 +663,7 @@ def riwayatKembali():
     rolling = True
     count = 0
     while rolling:
-        returnSort = sorted(gadget_return_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
+        returnSort = sorted(gadget_return_history[count+1:], key = lambda date: datetime.datetime.strptime(date[2], '%d/%m/%Y'),reverse=True)
         lanjutkan = True
         for i in range(5):
             try:
@@ -710,6 +710,7 @@ def riwayatConsumable():
                 print("Tanggal Pengambilan  : " + consumableSort[i][3])
                 print("Jumlah               : " + str(consumableSort[i][4]))
             except:
+                print(i)
                 IndexError
                 print()
                 print("Data sudah habis")
