@@ -478,10 +478,10 @@ def ubahjumlah():
 
 # ============================ F8 ========================================
 def pinjam():
-    # Meminjam gadget sesuai id_item yang dimasukan dan akan mengurangi jumlah pada gadget dan menambahkan entri pada 
+    # Meminjam gadget sesuai id_item yang dimasukan dan akan mengurangi jumlah pada gadget dan menambahkan entri pada gadget_borrow_history
     
     # input/output -> gadget : array of array of string and integer
-    # output -> gadget_borrow_history : array of array of string, integer, and boolean
+    # input/output -> gadget_borrow_history : array of array of string, integer, and boolean
     
     # I.S. matriks data gadget dan gadget_borrow_history terdefinisi
     # F.S. jumlah gadget pada data gadget berkurang dan terdapat entri baru pada gadget_borrow_history
