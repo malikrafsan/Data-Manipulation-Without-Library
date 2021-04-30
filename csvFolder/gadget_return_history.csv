@@ -1,3 +1,3 @@
-id;id_peminjaman;tanggal_pengembalian;jumlah_peminjaman
-GRH1;GBH1;G6;15/04/2021;6
-GRH2;GBH2;G1;16/04/2021;5
+id;id_peminjaman;tanggal_pengembalian;jumlah_pengembalian;applicable_or_not
+GRH1;GBH1;G6;15/04/2021;6;applicable
+GRH2;GBH2;G1;16/04/2021;5;applicable
