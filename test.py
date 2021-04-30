@@ -54,18 +54,18 @@ print ("bar =", args.bar)
 import argparse
 
 parser = argparse.ArgumentParser()
-try:
-    parser.add_argument("<nama-folder>", type=str, help="Inputkan nama folder csv disini")
-except:
-    parser.error()
-    print("tes")
-parser.error("AAAAAAAAA")
-if parser.parse_args().folder is None:
-    
+
+parser.add_argument("-f","--namaFolder", type=str, help="Inputkan nama folder csv disini")
+print(parser.parse_args().namaFolder)
+argparse._UNRECOGNIZED_ARGS_ATTR("AAAAAA")
+    #print("tes")
+#parser.exit("exit")
+#parser.error("AAAAAAAAA")
+if parser.parse_args().namaFolder is None:
     print("gaada folder")
 else:
     print("Ada ngab")
-    print(parser.parse_args().folder)
+    print(parser.parse_args().namaFolder)
 """
 if args.foo and args.bar is None:
     parser.error("--foo requires --bar. You did not specify bar.")

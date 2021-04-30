@@ -623,34 +623,34 @@ def kembalikan():
 
 # ============================ F11 ========================================
 def riwayatPinjam():
+    rolling = True
     count = 0
-    riwayatPinjamPrint(count)
-
-def riwayatPinjamPrint(count):
-    borrowSort = sorted(gadget_borrow_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
-    bisaLanjut = True
-    for i in range(5):
-        try:
-            namaUser = user[cariID(user,borrowSort[i][1])][2]
-            namaGadget = gadget[cariID(gadget,borrowSort[i][2])][1]
+    while rolling:
+        borrowSort = sorted(gadget_borrow_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
+        bisaLanjut = True
+        for i in range(5):
+            try:
+                namaUser = user[cariID(user,borrowSort[i][1])][2]
+                namaGadget = gadget[cariID(gadget,borrowSort[i][2])][1]
+                print()
+                print("ID Peminjam          : " + borrowSort[i][1])
+                print("Nama Pengambil       : " + namaUser)
+                print("Nama Gadget          : " + namaGadget)
+                print("Tanggal Peminjamanan : " + borrowSort[i][3])
+                print("Jumlah               : " + str(borrowSort[i][4]))
+            except:
+                IndexError
+                print()
+                print("Data sudah habis")
+                bisaLanjut = False
+                break
+        if bisaLanjut and len(borrowSort) != 5:
             print()
-            print("ID Peminjam          : " + borrowSort[i][1])
-            print("Nama Pengambil       : " + namaUser)
-            print("Nama Gadget          : " + namaGadget)
-            print("Tanggal Peminjamanan : " + borrowSort[i][3])
-            print("Jumlah               : " + str(borrowSort[i][4]))
-        except:
-            IndexError
-            print()
-            print("Data sudah habis")
-            bisaLanjut = False
-            break
-    if bisaLanjut and len(borrowSort) != 5:
-        print()
-        lanjut = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
-        if lanjut == 'Y':
-            count += 5
-            riwayatPinjamPrint(count)
+            lanjut = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+            if lanjut == 'Y':
+                count += 5
+            else:
+                rolling = False
             
 # ============================ F12 ========================================
 def riwayatKembali():
@@ -743,19 +743,10 @@ def tryInt(data):
                 data[i][j] = int(data[i][j])
             except:
                 ValueError
-    return data
-
-def tryIntBool(data):
-    for i in range(len(data)):
-        for j in range(len(data[i])):
-            try:
-                data[i][j] = int(data[i][j])
-            except:
-                ValueError
-                try:
-                    data[i][j] = bool(data[i][j])
-                except:
-                    ValueError
+            if data[i][j] == "True":
+                data[i][j] = True
+            elif data[i][j] == "False":
+                data[i][j] = False
     return data
 
 def load(folder):
@@ -777,20 +768,22 @@ def load(folder):
     consumable_history = tryInt(load_data("consumable_history.csv"))
     gadget_borrow_history = tryInt(load_data("gadget_borrow_history.csv"))
     gadget_return_history = tryInt(load_data("gadget_return_history.csv"))
-    inventory_user = tryIntBool(load_data("inventory_user.csv"))
+    inventory_user = tryInt(load_data("inventory_user.csv"))
     os.chdir('../')
 
 def loading():
     parser = argparse.ArgumentParser(description="""
 Program Tugas Besar IF1210 Kelompok 11 Kelas 10 Dasar Pemrograman
-\033[93mformat input : python main.py <nama-folder-csv>\033[0m
-""")
-    parser.add_argument("-f","--folder", type=str, help="Inputkan nama folder csv disini")  
+\033[93mformat input : python main.py -f <nama-folder-csv>\033[0m
+""", epilog='Enjoy the program! :D')
+    
+    parser.add_argument("-f","--folder", type=str, help="Inputkan nama folder csv (harus diinputkan)")  
     if parser.parse_args().folder is None:
         parser.error("""
 \033[91mNama folder csv tidak diinputkan!\033[0m
-\033[93mformat input : python main.py <nama-folder-csv>\033[0m""")
+\033[93mformat input : python main.py -f <nama-folder-csv>\033[0m""")
         return None
+    
     directory = parser.parse_args().folder
     parent = os.getcwd()
     path = os.path.join(parent, directory)
@@ -849,7 +842,8 @@ def save():
     save_data("consumable.csv",consumable)
     save_data("gagdet_borrow_history.csv",gadget_borrow_history)
     save_data("gadget_return_history.csv",gadget_return_history)
-    save_data("consumable_history.csv",consumable_history)    
+    save_data("consumable_history.csv",consumable_history)
+    save_data("inventory_user",inventory_user)
     
     print("Data telah disimpan pada folder " + Bold(directory))
     os.chdir('../')
@@ -917,9 +911,9 @@ def exit():
     # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
     
     # ALGORITMA
-    isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (y/n) ")
+    isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (Y/N) ")
     while not validasiYN(isSave):
-        isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (y/n) ")
+        isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (Y/N) ")
     if isSave == "Y":
         save()
     print("Terima kasih telah menggunakan kantong ajaib ^_^")
@@ -1009,9 +1003,23 @@ def hasilGacha(lstChance):
             else:
                 return 'S'
 
+def Gacha():
+    global lstChance
+    global inventory_user
+    global consumable
+    
+    print()
+    print("========INVENTORY========")
+    count = 0
+    IDInventory = []
+    for i in range(len(inventory_user)):
+        if inventory_user[i][0] == idUser:
+            count += 1
+
 def gacha():
     global lstChance
     global inventory_user
+    global consumable_history
     global consumable
     
     print()
@@ -1031,52 +1039,85 @@ def gacha():
         return
     print("=========================")
     print()
-    digunakan = int(input("Pilih consumable yang mau digunakan: "))
-    if digunakan > count:
-        print("Input anda tidak valid")
-        return
-    jumlah = int(input("Jumlah yang digunakan: "))
+    
+    # Validasi consumable yang digunakan
+    digunakanBenar = False
+    while not digunakanBenar:
+        try:
+            digunakan = int(input("Pilih consumable yang mau digunakan: "))
+            if digunakan > count:
+                print("Input anda tidak valid")
+                print()
+            else:
+                digunakanBenar = True
+        except:
+            ValueError
+            print("Pilihan harus berupa bilangan bulat")
+            print()
+    urutanInventory = cariData(inventory_user,IDInventory[digunakan-1],1)
+
+    # Validasi jumlah consumable yang digunakan
+    jumlahBenar = False
+    while not jumlahBenar:
+        try:
+            jumlah = int(input("Jumlah yang digunakan: "))
+            if jumlah > inventory_user[urutanInventory][2]:
+                print("Input anda tidak valid")
+                print()
+            else:
+                jumlahBenar = True
+        except:
+            ValueError
+            print("Pilihan harus berupa bilangan bulat")
+            print()
+
     urutan = cariID(consumable,IDInventory[digunakan - 1])
-    if consumable[urutan][3] < jumlah:
-        print("Jumlah consumable Anda tidak mencukupi")
-    else:
-        print(Bold(consumable[urutan][1]) + " (" + Bold("x" + str(jumlah)) + ") ditambahkan!")
-        lstChance = chance(lstChance,consumable[urutan][4])
-        consumable[urutan][3] += jumlah
-        # Tanya kakaknya kalo digunakan gacha apakah hilang consumablenya
-        inventory_user[cariData(inventory_user,IDInventory[digunakan-1],2)][4] -= jumlah
-        print("Chance mendapatkan Rarity ", end='')
-        if lstChance[0] != 0:
-            print(Bold('C') + " (" + Bold("{:.2f}".format(lstChance[0])) + "%) ", end='')
-        if lstChance[1] != 0:
-            print(Bold('B') + " (" + Bold("{:.2f}".format(lstChance[1])) + "%) ", end='')
-        if lstChance[2] != 0:
-            print(Bold('A') + " (" + Bold("{:.2f}".format(lstChance[2])) + "%) ", end='')
-        if lstChance[3] != 0:
-            print(Bold('S') + " (" + Bold("{:.2f}".format(lstChance[3])) + "%)", end='')
-        print()
-        print()
+    consumable[urutan][3] += jumlah
+    inventory_user[urutanInventory][2] -= jumlah
+    if inventory_user[urutanInventory][2] == 0:
+        inventory_user.pop(urutanInventory)
+    print(Bold(consumable[urutan][1]) + " (" + Bold("x" + str(jumlah)) + ") ditambahkan!")
+    lstChance = chance(lstChance,consumable[urutan][4])
+
+    print("Chance mendapatkan Rarity ", end='')
+    if lstChance[0] != 0:
+        print(Bold('C') + " (" + Bold("{:.2f}".format(lstChance[0])) + "%) ", end='')
+    if lstChance[1] != 0:
+        print(Bold('B') + " (" + Bold("{:.2f}".format(lstChance[1])) + "%) ", end='')
+    if lstChance[2] != 0:
+        print(Bold('A') + " (" + Bold("{:.2f}".format(lstChance[2])) + "%) ", end='')
+    if lstChance[3] != 0:
+        print(Bold('S') + " (" + Bold("{:.2f}".format(lstChance[3])) + "%)", end='')
+    print()
+    print()
+    perintah = input("Tambahkan item lagi? (Y/N): ")
+    
+    # Validasi perintah
+    while not validasiYN(perintah):
         perintah = input("Tambahkan item lagi? (Y/N): ")
-        
-        if perintah == 'Y':
-            gacha()
-        else:
-            print()
-            print("Rolling...")
-            time.sleep(3)
-            print()
-            rarity = hasilGacha(lstChance)        
-            finished = False
-            while not finished:
-                for i in range(len(consumable)):
-                    if consumable[i][4] == rarity:
-                        print("Selamat Anda mendapatkan " + Bold(consumable[i][1]) + " (Rarity " + rarity + ") sebanyak x" + Bold(str(consumable[i][3])) + "!")
-                        tambah_con_history = ["CH" + str(len(inventory_user)),idUser,consumable[i][0],datetime.date.today().strftime("%d/%m/%Y")]
-                        inventory_user += tambah_con_history
-                        lstChance = [0,0,0,0]
-                        finished = True
-                        return
-                rarity = hasilGacha(lstChance)
+    
+    if perintah == 'Y':
+        gacha()
+    else:
+        print()
+        print("Rolling...")
+        time.sleep(3)
+        print()
+        rarity = hasilGacha(lstChance)        
+        finished = False
+        while not finished:
+            for i in range(len(consumable)):
+                if consumable[i][4] == rarity:
+                    print("Selamat Anda mendapatkan " + Bold(consumable[i][1]) + " (Rarity " + rarity + ") sebanyak x" + Bold(str(consumable[i][3])) + "!")
+                    tambah_con_history = ["CH" + str(len(consumable_history)),idUser,consumable[i][0],datetime.date.today().strftime("%d/%m/%Y"),consumable[i][3]]
+                    consumable_history.append(tambah_con_history)
+                    tambah_inventory = [idUser,consumable[i][0],consumable[i][3]]
+                    inventory_user.append(tambah_inventory)
+                    consumable[i][3] = 0
+                    lstChance = [0,0,0,0]
+                    finished = True
+                    return
+            rarity = hasilGacha(lstChance)
 
 # ============================ FUNGSI TAMBAHAN ========================================
 
@@ -1171,18 +1212,16 @@ def validasiYN(string):
 user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []; inventory_user = []
 idUser = ""; random=0; lstChance = [0,0,0,0]
 lstPerintah = ['register', 'login', 'caricarity', 'caritahun', 'tambahitem', 'hapusitem', 'ubahjumlah', 'pinjam', 
-               'kembalikan', 'minta', 'riwayatpinjam', 'riwayatkembali', 'riwayatambil', 'save', 'help']
+               'kembalikan', 'minta', 'riwayatpinjam', 'riwayatkembali', 'riwayatambil', 'save', 'help', 'gacha']
 
-#arg()
+
 program = True
 hasLogin = False
 isAdmin = False
 
 directory = loading()
 
-if directory == None:
-    print("tes")
-else:
+if not(directory == None):
     print("Loading...")
     time.sleep(2)
     load(directory)
@@ -1217,69 +1256,10 @@ else:
                 print(colorStr("Anda sudah login, exit terlebih dahulu untuk menggunakan akun lain","red"))
             else:
                 login()
-        else:
-            if hasLogin:
-                if perintah == "register":
-                    if isAdmin:
-                        register()
-                    else:
-                        print("Maaf, hanya boleh diakses oleh admin ^_^")
-                        pass #print() peringatan
-                elif perintah == "carirarity":
-                    cariRarity()
-                elif perintah == "caritahun":
-                    caritahun()
-                elif perintah == "tambahitem":
-                    if isAdmin:
-                        tambahItem()
-                    else:
-                        pass #print() peringatan
-                elif perintah == "hapusitem":
-                    if isAdmin:
-                        hapusItem()
-                    else:
-                        pass #print() peringatan
-                elif perintah == "ubahjumlah":
-                    if isAdmin:
-                        ubahjumlah()
-                    else:    
-                        pass #print() peringatan
-                elif perintah == "pinjam":
-                    if not isAdmin:
-                        pinjam()
-                    else:
-                        pass #print() peringatan
-                elif perintah == "kembalikan":
-                    if not isAdmin:
-                        pass #kembalikan()
-                    else:
-                        pass #print() peringatan
-                elif perintah == "minta":
-                    if not isAdmin:
-                        pass#mintaConsumable()
-                    else:
-                        pass #print() peringatan
-                elif perintah == "riwayatpinjam":
-                    if isAdmin:
-                        riwayatPinjam()
-                    else:
-                        pass #print() peringatan
-                elif perintah == "riwayatkembali":
-                    if isAdmin:    
-                        pass #riwayatKembali
-                    else:
-                        pass #print() peringatan
-                elif perintah == "riwayatambil":
-                    if isAdmin:
-                        riwayatConsumable()
-                    else:
-                        pass #print() peringatan
-                elif perintah == "save":
-                    save()
-                elif perintah == "exit":
-                    exit()
-                    print("""\
-                        
+        elif perintah == "exit":
+            exit()
+            print("""\
+                
 \033[36m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣴⣶⣶⣶⣶⣶⠶⣶⣤⣤⣀⠀⠀⠀⠀⠀⠀ \033[0m
 \033[36m⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⣿⣿⣿⠁⠀⢀⠈⢿⢀⣀⠀⠹⣿⣿⣿⣦⣄⠀⠀⠀ \033[0m
 \033[36m⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⠿⠀⠀⣟⡇⢘⣾⣽⠀⠀⡏⠉⠙⢛⣿⣷⡖⠀ \033[0m
@@ -1290,7 +1270,75 @@ else:
 \033[36m⢮⠀⠀⠀⠀⣿⣿⣆⠀⠀⠻⣿⡿⠛⠉⠉⠁⠀⠉⠉⠛⠿⣿⣿⠟⠁⠀⣼⠃⠀ \033[0m
 \033[36m⠈⠓⠶⣶⣾⣿⣿⣿⣧⡀⠀⠈⠒⢤⣀⣀⡀⠀⠀⣀⣀⡠⠚⠁⠀⢀⡼⠃⠀⠀ \033[0m
 \033[36m⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣭⣭⣭⣭⣭⣥⣤⣤⣤⣴⣟⠁\033[0m
-                                        """)
+                                """)
+        else:
+            if hasLogin:
+                if perintah == "register":
+                    if isAdmin:
+                        register()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh admin ^_^")
+                        print()
+                elif perintah == "carirarity":
+                    cariRarity()
+                elif perintah == "caritahun":
+                    caritahun()
+                elif perintah == "tambahitem":
+                    if isAdmin:
+                        tambahItem()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh admin ^_^")
+                        print()
+                elif perintah == "hapusitem":
+                    if isAdmin:
+                        hapusItem()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh admin ^_^")
+                        print()
+                elif perintah == "ubahjumlah":
+                    if isAdmin:
+                        ubahjumlah()
+                    else:    
+                        pass #print() peringatan
+                elif perintah == "pinjam":
+                    if not isAdmin:
+                        pinjam()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh user ^_^")
+                        print()
+                elif perintah == "kembalikan":
+                    if not isAdmin:
+                        kembalikan()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh user ^_^")
+                        print()
+                elif perintah == "minta":
+                    if not isAdmin:
+                        pass#mintaConsumable()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh user ^_^")
+                        print()
+                elif perintah == "riwayatpinjam":
+                    if isAdmin:
+                        riwayatPinjam()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh admin ^_^")
+                        print()
+                elif perintah == "riwayatkembali":
+                    if isAdmin:    
+                        pass #riwayatKembali
+                    else:
+                        print("Maaf, hanya boleh diakses oleh admin ^_^")
+                        print()
+                elif perintah == "riwayatambil":
+                    if isAdmin:
+                        riwayatConsumable()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh admin ^_^")
+                        print()
+                elif perintah == "save":
+                    save()
+
                 elif perintah == "gacha":
                     gacha()
                 else:
