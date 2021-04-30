@@ -569,7 +569,7 @@ def pinjam():
         gadget_borrow_history.append([id_peminjaman, idUser, id_item, date_string, amount, False])
     # Kondisi jika user pernah meminjam gadget dengan id = id_item, namun belum mengembalikannya
     else:
-        print("Maaf, anda pernah meminjam gadget yang sama dan belum mengembalikannya")
+        print("Maaf, anda pernah meminjam gadget yang sama dan belum mengembalikannya, anda harus mengembalikan secara keseluruhan gadget yang baru saja anda ingin pinjam")
         print()
 
 # ============================ F9 + FB02 ========================================
