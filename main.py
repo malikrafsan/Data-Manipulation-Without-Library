@@ -1325,7 +1325,7 @@ if not(directory == None):
                         print()
                 elif perintah == "minta":
                     if not isAdmin:
-                        pass #mintaConsumable()
+                        pass#mintaConsumable()
                     else:
                         print("Maaf, hanya boleh diakses oleh user ^_^")
                         print()
