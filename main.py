@@ -287,7 +287,10 @@ def tambahItem():
         jumlah = input("Masukkan Jumlah: ")
         try:
             jumlah = int(jumlah)
-            isNumber = True
+            if jumlah <= 0:
+                print("Jumlah harus bernilai positif")
+            else:
+                isNumber = True
         except:
             ValueError
             print("Jumlah harus berupa bilangan integer, silakan masukkan kembali")
@@ -680,18 +683,76 @@ def kembalikan():
     else:
         print("Anda belum pernah meminjam gadget sama sekali")
 # ============================ F10 ========================================
-
-"""def mintaConsumable():
+def mintaConsumable():
     ID = input("Masukkan ID item: ")
-    jumlah = input("Jumlah: ")
-    tanggal = input("Tanggal permintaan: ") #belum divalidasi
-    arrMintaConsumable = [ID,jumlah,tanggal]
-    consumable.append(arrMintaConsumable)
-    print("")
-    print(f"Item {ID} (x{jumlah}) telah berhasil diambil!")"""
-
+    # Validasi ID ada
+    while not (cariID(consumable,ID) == None):
+        print("ID item tidak tersedia, mohon inputkan ID yang benar")
+        print()
+        ID = input("Masukkan ID item: ")
+        indexCon = cariID(consumable,ID)
+    
+    # Validasi jumlah
+    jumlahCocok = False
+    while not jumlahCocok:
+        try:
+            jumlah = int(input("Jumlah: "))
+            if jumlah > consumable[indexCon][3]:
+                print("Jumlah melebihi jumlah database")
+                print()
+            elif jumlah <= 0:
+                print("Jumlah harus positif")
+                print()
+            else:
+                jumlahCocok = True
+        except:
+            ValueError
+            print("Jumlah harus berupa bilangan bulat, silakan input kembali")
+            print()
+    
+    # Validasi tanggal
+    tanggal = input("Tanggal permintaan: ")
+    while not tglValid(tanggal):
+        print("Tanggal yang diinputkan invalid, mohon inputkan kembali")
+        print()
+        tanggal = input("Tanggal permintaan: ")
+    
+    consumable[indexCon][3] -= jumlah
+    tambahHistory = ["CH" + str(len(consumable_history)), idUser, ID, tanggal, jumlah]
+    consumable_history.append(tambahHistory)
+    dataInventory = cariData(inventory_user,ID,1)
+    if dataInventory == None:
+        tambahInventory = [idUser,ID,jumlah]
+        inventory_user.append(tambahInventory)
+    else:
+        inventory_user[dataInventory][2] += jumlah
+    
+    print("Item " + Bold(consumable[indexCon][1] + " (x" + str(jumlah) + ")") + " telah berhasil diambil!")
+    
 # ============================ F11 ========================================
 def riwayatPinjam():
+    # Menampilkan daftar peminjaman gadget yang telah dilakukan para user ke layar
+    
+    # input ->  gadget_borrow_history : array of array of string
+    #           user : array of array of string
+    #           gadget : array of list of string and integer
+    
+    # I.S. matriks data user, gadget, gadget_borrow_history terdefinisi
+    # F.S. tercetak ke layar riwayat peminjaman user
+    
+    # KAMUS LOKAL
+    # rolling, bisaLanjut : boolean
+    # count : integer
+    # borrowSort : array of list of integer and string
+    # namaUser, namaGadget : string
+    
+    # Function / Procedure
+    # validasiYN(jawaban : string) -> boolean
+    # Memvalidasi input dari user, harus 'Y' atau 'N'
+    # I.S. string terdefinisi
+    # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
+    
+    # ALGORITMA
     rolling = True
     count = 0
     while rolling:
@@ -708,14 +769,19 @@ def riwayatPinjam():
                 print("Tanggal Peminjamanan : " + borrowSort[i][3])
                 print("Jumlah               : " + str(borrowSort[i][4]))
             except:
+                # Ketika data habis maka akan terjadi IndexError
                 IndexError
                 print()
                 print("Data sudah habis")
                 bisaLanjut = False
                 break
+
         if bisaLanjut and len(borrowSort) != 5:
             print()
             lanjut = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+            # Validasi input
+            while not validasiYN(lanjut):
+                lanjut = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
             if lanjut == 'Y':
                 count += 5
             else:
@@ -724,6 +790,41 @@ def riwayatPinjam():
             rolling = False
             
 # ============================ F12 ========================================
+def riwayatKembali():
+    count = 0
+    riwayatKembaliPrint(count)
+
+def riwayatKembaliPrint(count):
+    borrowSort = sorted(gadget_borrow_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
+    returnSort = sorted(gadget_return_history[count+1:], key = lambda date: datetime.datetime.strptime(date[2], '%d/%m/%Y'),reverse=True)
+    lanjutkan = True
+    for i in range(5):
+        try:
+            namaUser = user[cariID(user,borrowSort[i][1])][2]
+            namaGadget = gadget[cariID(gadget,borrowSort[i][2])][1]
+
+            #returnSort[i][2]
+            print()
+            print(i)
+            print("ID Pengembalian      : " + returnSort[i][0])
+            print("Nama Pengambil       : " + namaUser)
+            print("Nama Gadget          : " + namaGadget)
+            print("Tanggal Pengembalian : " + returnSort[i][2])
+            print("Jumlah               : " + str(returnSort[i][3]))
+        except:
+            IndexError
+            print()
+            print("Data sudah habis")
+            lanjutkan = False
+            break
+    if lanjutkan and len(returnSort) != 5:
+        print()
+        next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+        if next == 'Y':
+            count += 5
+            riwayatKembaliPrint(count)
+
+"""
 def riwayatKembali():
     rolling = True
     count = 0
@@ -756,9 +857,31 @@ def riwayatKembali():
                 rolling = False
         else:
             rolling = False
-            
+"""
 # ============================ F13 ========================================
 def riwayatConsumable():
+    # Menampilkan daftar pengambilan consumable yang telah dilakukan para user ke layar
+    
+    # input ->  consumable_history : array of array of string and integer
+    #           user : array of array of string
+    #           consumable : array of list of string and integer
+    
+    # I.S. matriks data user, gadget, gadget_borrow_history terdefinisi
+    # F.S. tercetak ke layar riwayat peminjaman user
+    
+    # KAMUS LOKAL
+    # rolling, berikutnya : boolean
+    # count : integer
+    # consumableSort : array of list of integer and string
+    # namaUser, namaConsumable : string
+    
+    # Function / Procedure
+    # validasiYN(jawaban : string) -> boolean
+    # Memvalidasi input dari user, harus 'Y' atau 'N'
+    # I.S. string terdefinisi
+    # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
+    
+    # ALGORITMA
     rolling = True
     count = 0
     while rolling:
@@ -775,6 +898,7 @@ def riwayatConsumable():
                 print("Tanggal Pengambilan  : " + consumableSort[i][3])
                 print("Jumlah               : " + str(consumableSort[i][4]))
             except:
+                # Ketika data habis maka akan terjadi IndexError
                 print(i)
                 IndexError
                 print()
@@ -783,8 +907,11 @@ def riwayatConsumable():
                 break
         if berikutnya and len(consumableSort) != 5:
             print()
-            next = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
-            if next == 'Y':
+            nextInp = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+            # Validasi input
+            while not validasiYN(nextInp):
+                lanjut = input("Apakah mau ditampilkan data lebih lanjut? (Y/N) ")
+            if nextInp == 'Y':
                 count += 5
             else:
                 rolling = False
@@ -1137,7 +1264,7 @@ def gacha():
         try:
             jumlah = int(input("Jumlah yang digunakan: "))
             if jumlah > inventory_user[urutanInventory][2]:
-                print("Input anda tidak valid")
+                print("Jumlah yang diinputkan terlalu banyak")
                 print()
             else:
                 jumlahBenar = True
