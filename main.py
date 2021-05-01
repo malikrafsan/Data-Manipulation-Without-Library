@@ -686,9 +686,43 @@ def kembalikan():
     # Kondisi jika user belum pernah meminjam barang
     else:
         print("Anda belum pernah meminjam gadget sama sekali")
+        
 # ============================ F10 ========================================
 def mintaConsumable():
+    # Meminta consumable yang tersedia pada database
+    
+    # input/output ->   consumable : array of array of string and integer
+    #                   inventory_user : array of array of string and integer
+    #                   consumable_history : array of array of string and integer
+    
+    # I.S. matriks data consumable, inventory_user, dan consumable_history terdefinisi
+    # F.S. consumable terpinjam dan data consumable, inventory_user, consumable_history telah diubah
+    
+    # KAMUS LOKAL
+    # ID, tanggal : string
+    # indexCon, jumlah, dataInventory : integer
+    # jumlahCocok : boolean
+    # tambahHistory, tambahInventory : array of string and integer
+    
+    # Function / Procedure
+    # cariID(data : array of array of string and integer, ID : string) -> integer
+    # Mencari index dimana ID adaa pada data
+    # I.S. data dan ID terdefinisi
+    # F.S. dikembalikan index dimana ID berada pada data
+    
+    # cariData(data)
+    # Mencari "dicari" di dalam data berdasarkan index kolomnya
+    # I.S. data, dicari, dan index terdefinisi
+    # F.S. dikembalikan index baris dimana "dicari" berada pada data
+    
+    # Bold(string) -> string
+    # Mengubah text menjadi terlihat bold jika di-print
+    # I.S. text terdefinisi
+    # F.S. text diberi 'kode' yang jika di-print text menjadi terlihat bold
+
+    # ALGORITMA
     ID = input("Masukkan ID item: ")
+    
     # Validasi ID ada
     while not (cariID(consumable,ID) == None):
         print("ID item tidak tersedia, mohon inputkan ID yang benar")
@@ -721,6 +755,7 @@ def mintaConsumable():
         print()
         tanggal = input("Tanggal permintaan: ")
     
+    # Mengubah data pada consumable, consumable_history, dan inventory_user
     consumable[indexCon][3] -= jumlah
     tambahHistory = ["CH" + str(len(consumable_history)), idUser, ID, tanggal, jumlah]
     consumable_history.append(tambahHistory)
@@ -731,6 +766,7 @@ def mintaConsumable():
     else:
         inventory_user[dataInventory][2] += jumlah
     
+    # Mencetak ke layar bahwa consumable berhasil diambil
     print("Item " + Bold(consumable[indexCon][1] + " (x" + str(jumlah) + ")") + " telah berhasil diambil!")
     
 # ============================ F11 ========================================
@@ -747,8 +783,8 @@ def riwayatPinjam():
     # KAMUS LOKAL
     # rolling, bisaLanjut : boolean
     # count : integer
-    # borrowSort : array of list of integer and string
-    # namaUser, namaGadget : string
+    # borrowSort : array of array of string and integer
+    # namaUser, namaGadget, lanjut : string
     
     # Function / Procedure
     # validasiYN(jawaban : string) -> boolean
@@ -760,6 +796,7 @@ def riwayatPinjam():
     rolling = True
     count = 0
     while rolling:
+        # Mensortir data berdasarkan tanggal, secara descending
         borrowSort = sorted(gadget_borrow_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
         bisaLanjut = True
         for i in range(5):
@@ -795,9 +832,33 @@ def riwayatPinjam():
             
 # ============================ F12 ========================================
 def riwayatKembali():
+    # Menampilkan daftar pengembalian gadget yang telah dilakukan para user ke layar
+    
+    # input ->  gadget_borrow_history : array of array of string
+    #           gadget_return_history : array of array of string
+    #           user : array of array of string
+    #           gadget : array of list of string and integer
+    
+    # I.S. matriks data user, gadget, gadget_borrow_history terdefinisi
+    # F.S. tercetak ke layar riwayat peminjaman user
+    
+    # KAMUS LOKAL
+    # rolling, lanjutkan : boolean
+    # count : integer
+    # returnSort : array of array of string and integer
+    # namaUser, namaGadget, id_user, id_gadget, nextInp : string
+    
+    # Function / Procedure
+    # validasiYN(jawaban : string) -> boolean
+    # Memvalidasi input dari user, harus 'Y' atau 'N'
+    # I.S. string terdefinisi
+    # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
+
+    # ALGORITMA
     rolling = True
     count = 0
     while rolling:
+        # Mensortir data berdasarkan tanggal, secara descending
         returnSort = sorted(gadget_return_history[count+1:], key = lambda date: datetime.datetime.strptime(date[2], '%d/%m/%Y'),reverse=True)
         lanjutkan = True
         for i in range(5):
@@ -851,7 +912,7 @@ def riwayatConsumable():
     # KAMUS LOKAL
     # rolling, berikutnya : boolean
     # count : integer
-    # consumableSort : array of list of integer and string
+    # consumableSort : array of array of string and integer
     # namaUser, namaConsumable : string
     
     # Function / Procedure
@@ -864,6 +925,7 @@ def riwayatConsumable():
     rolling = True
     count = 0
     while rolling:
+        # Mensortir data berdasarkan tanggal, secara descending
         consumableSort = sorted(consumable_history[count+1:], key = lambda date: datetime.datetime.strptime(date[3], '%d/%m/%Y'),reverse=True)
         berikutnya = True
         for i in range(5):
@@ -899,6 +961,19 @@ def riwayatConsumable():
 
 # ============================ F14 ========================================
 def load_data(file):
+    # Membaca file csv dan mengembalikan matriks data sesuai data csv
+    # I.S. file terdefinisi
+    # F.S. dikembalikan matriks data sesuai file
+    
+    # KAMUS LOKAL
+    # f : SEQFILE OF
+    #       (*) raw_lines : array of string
+    #       (1) mark : None 
+    # lst : array of string
+    # data : string
+    # lstAll : array of array of string
+    
+    # ALGORITMA
     f = open(file,"r")
     raw_lines = f.readlines()
     f.close()
@@ -909,22 +984,34 @@ def load_data(file):
         data =""
         for i in range(len(line)):
             if line[i] == ';':
+                # jika bertemu dengan ';' maka data akan ditambahkan ke lst
                 lst.append(data)
                 data = ""
             elif (i == len(line) - 1):
+                # menambahkan data bagian paling belakang pada satu baris ke dalam lst
                 lst.append(data + line[i])
             else:
                 data += line[i]
         lstAll.append(lst)
     return lstAll
 
-def tryInt(data):
+def tryChange(data):
+    # Mengubah tipe data yang ada pada data menjadi boolean atau integer jika dimungkinkan
+    # I.S. data terdefinisi
+    # F.S. dikembalikan data dimana elemen yang dapat diubah, diubah menjadi boolean atau integer telah diubah
+    
+    # KAMUS LOKAL
+    # i, j : integer
+    
+    # ALGORITMA
     for i in range(len(data)):
         for j in range(len(data[i])):
             try:
+                # Dicoba diubah menjadi integer
                 data[i][j] = int(data[i][j])
             except:
                 ValueError
+            # Dicoba diubah menjadi boolean
             if data[i][j] == "True":
                 data[i][j] = True
             elif data[i][j] == "False":
@@ -932,6 +1019,15 @@ def tryInt(data):
     return data
 
 def load(folder):
+    # Membaca file-file csv pada folder yang diinputkan
+    # I.S. pada folder terdapat file-file csv yang dibutuhkan
+    # F.S. didapatkan matriks data sesuai dengan file-file csv yang ada
+    
+    # KAMUS LOKAL
+    # user : array of array of string
+    # gadget, gadget_borrow_history, gadget_return_history, consumable, consumable_history, inventory_user : array of array of string and integer
+    
+    # Variable global
     global user
     global gadget
     global consumable
@@ -940,48 +1036,88 @@ def load(folder):
     global gadget_return_history
     global inventory_user
     
+    # Function / Procedure
+    # load_data(file : csv) -> array of array of string
+    # Membaca file csv dan mengembalikan matriks data sesuai data csv
+    # I.S. file terdefinisi
+    # F.S. dikembalikan matriks data sesuai file
+
+    # tryChange(data : array of array of string) -> array of array of string and integer and boolean
+    # Mengubah tipe data yang ada pada data menjadi boolean atau integer jika dimungkinkan
+    # I.S. data terdefinisi
+    # F.S. dikembalikan data dimana elemen yang dapat diubah, diubah menjadi boolean atau integer telah diubah
+
+    # ALGORITMA
     os.chdir('./' + str(folder))
     
     user = load_data("user.csv")
-    gadget = tryInt(load_data("gadget.csv"))
-    consumable = tryInt(load_data("consumable.csv"))
-    consumable_history = tryInt(load_data("consumable_history.csv"))
-    gadget_borrow_history = tryInt(load_data("gadget_borrow_history.csv"))
-    gadget_return_history = tryInt(load_data("gadget_return_history.csv"))
-    inventory_user = tryInt(load_data("inventory_user.csv"))
+    gadget = tryChange(load_data("gadget.csv"))
+    consumable = tryChange(load_data("consumable.csv"))
+    consumable_history = tryChange(load_data("consumable_history.csv"))
+    gadget_borrow_history = tryChange(load_data("gadget_borrow_history.csv"))
+    gadget_return_history = tryChange(load_data("gadget_return_history.csv"))
+    inventory_user = tryChange(load_data("inventory_user.csv"))
     os.chdir('../')
 
 def loading():
+    # Membaca argumen dari python menggunakan argparse
+    # I.S. sembarang
+    # F.S. Dikembalikan driectory folder csv jika ada, dan None jika tidak ada
+    
+    # KAMUS LOKAL
+    # parser : ArgumentParser
+    # directory, parent, path, files : string
+    # lstFile : array of string
+
+    # Function / Procedure
+    # fileExist(files : csv) -> boolean
+    # Mengecek apakah file ada atau tidak
+    # I.S. sembarang
+    # F.S. Dikembalikan True jika file ada, dan False jika tidak ada
+    
+    # ALGORITMA
+    # Penjelasan program
     parser = argparse.ArgumentParser(description="""
 Program Tugas Besar IF1210 Kelompok 11 Kelas 10 Dasar Pemrograman
-\033[93mformat input : python main.py -f <nama-folder-csv>\033[0m
+\033[93m format input : python main.py -f <nama-folder-csv> \033[0m
 """, epilog='Enjoy the program! :D')
     
+    # Menghandle jika input salah
     parser.add_argument("-f","--folder", type=str, help="Inputkan nama folder csv (harus diinputkan)")  
     if parser.parse_args().folder is None:
         parser.error("""
-\033[91mNama folder csv tidak diinputkan!\033[0m
-\033[93mformat input : python main.py -f <nama-folder-csv>\033[0m""")
+\033[91m Nama folder csv tidak diinputkan! \033[0m
+\033[93m format input : python main.py -f <nama-folder-csv> \033[0m""")
         return None
     
+    # Berpindah directory ke folder csv
     directory = parser.parse_args().folder
     parent = os.getcwd()
     path = os.path.join(parent, directory)
+    
+    # Validasi folder ada
     if not os.path.exists(path):
         print("Nama folder yang diinputkan tidak ada")
     else:
         os.chdir('./' + directory)
-        lstFile = ["user.csv","gadget.csv","gadget_borrow_history.csv","gadget_return_history.csv","consumable.csv","consumable_history.csv"]
+        lstFile = ["user.csv","gadget.csv","gadget_borrow_history.csv","gadget_return_history.csv","consumable.csv","consumable_history.csv", "inventory_user.csv"]
         for files in lstFile:
+            # Validasi file ada
             if not fileExist(files):
                 print(files + " tidak tersedia di folder yang diinputkan")
                 return None
-        if not fileExist('inventory_user.csv'):
-            print(colorStr("file inventory_user.csv tidak tersedia, program tetap bisa berjalan tetapi tidak dengan opsi gacha"))
+        # Berpindah directory ke parent
         os.chdir('../')
         return directory
         
 def fileExist(files):
+    # Mengecek apakah file ada atau tidak
+    # I.S. sembarang
+    # F.S. Dikembalikan True jika file ada, dan False jika tidak ada
+    
+    # KAMUS LOKAL
+    
+    # ALGORITMA
     if os.path.exists(files):
         return True
     else:
@@ -989,43 +1125,89 @@ def fileExist(files):
 
 # ============================ F15 ========================================
 def save_data(file,data):
+    # Menulis data ke dalam file csv
+    # I.S. data terdefinisi
+    # F.S. jika sebelumnya file sudah ada, maka di file diperbarui, dan jika belum ada, maka tertulis file baru
+    
+    # KAMUS LOKAL
+    # data : string
+    # f : SEQFILES OF
+    #       (*) array of string
+    #       (1) mark : None
+    
+    # Function / Procedure
+    # convert_datas_to_string (data : array of array of string) -> string
+    # Mengubah data menjadi string sesuai format agar dapat di-write ke dalam file csv
+    # I.S. data terdefinisi
+    # F.S. Dikembalikan string sesuai format
+    
+    # ALGORITMA
     data = convert_datas_to_string(data)
     
     f = open(file, "w") 
     f.write(data)
     f.close()
 
-def convert_datas_to_string(file):
+def convert_datas_to_string(data):
+    # Mengubah data menjadi string sesuai format agar dapat di-write ke dalam file csv
+    # I.S. data terdefinisi
+    # F.S. Dikembalikan string sesuai format
+    
+    # KAMUS LOKAL
+    # string_data : string
+    # arr_data : array of string and integer and boolean
+    # arr_data_all_string : array of string
+    
+    # ALGORITMA
     string_data = ""
-    for arr_data in file:
+    for arr_data in data:
         arr_data_all_string = [str(var) for var in arr_data]
         string_data += ";".join(arr_data_all_string)
         string_data += "\n"
     return string_data
 
 def save():
+    # Menyimpan data ke dalam file di folder yang diinputkan
+    # I.S. user, gadget, consumable, gadget_borrow_history, gadget_return_history, consumable_history, inventory_user terdefinisi
+    # F.S. file user, gadget, consumable, gadget_borrow_history, gadget_return_history, consumable_history, inventory_user tersimpan
+    
+    # KAMUS LOKAL
+    # parent, directory, path : string
+    
+    # Function / Procedure
+    # save_data (file : csv, data : array of array of string and integer and boolean)
+    # Menulis data ke dalam file csv
+    # I.S. data terdefinisi
+    # F.S. jika sebelumnya file sudah ada, maka di file diperbarui, dan jika belum ada, maka tertulis file baru
+    
+    # ALGORITMA
     parent = os.getcwd()
     directory = input("Masukkan nama folder penyimpanan : ")
-
     path = os.path.join(parent, directory)
+    
     try:
+        # Membuat folder baru jika folder belum ada
         os.mkdir(path)
     except:
         FileExistsError
+    
+    # Berpindah directory ke dalam folder csv
     os.chdir('./' + directory)
     print()
     print("Saving...")
     time.sleep(2)
 
+    # Menyimpan file-file csv
     save_data("user.csv",user)
     save_data("gadget.csv",gadget)
     save_data("consumable.csv",consumable)
     save_data("gagdet_borrow_history.csv",gadget_borrow_history)
     save_data("gadget_return_history.csv",gadget_return_history)
     save_data("consumable_history.csv",consumable_history)
-    save_data("inventory_user",inventory_user)
+    save_data("inventory_user.csv",inventory_user)
     
     print("Data telah disimpan pada folder " + Bold(directory))
+    # Berpindah directory ke folder parent
     os.chdir('../')
 
 # ============================ F16 ========================================
@@ -1128,19 +1310,47 @@ def hashing(str):
     return int(hashed)
 
 # ============================ FB03 ========================================
-def seed(seed):
+def seed():
+    # Mendapatkan seed berdasarkan time.time() (jumlah detik sejak 1 januari 1970) untuk prosedure rand()
+    # I.S. random terdefinisi
+    # F.S. random diubah nilainya sesuai time.time()
+    
+    # KAMUS LOKAL
+    # random : integer
+    
+    # Variable global
     global random
+    
+    # ALGORITMA
     random = round(time.time())
 
 def rand():
+    # Menghasilkan angka acak yang akan digunakan untuk gacha
+    # I.S. random terdefinisi
+    # F.S. dikembalikan random yang nilainya diubah menjadi angka acak baru
+    
+    # KAMUS LOKAL
+    # a, c, m : integer
+    
+    # Variable global
+    global random
+    
+    # ALGORITMA
     a = 47071034
     c = 22206856
     m = 87635214759
-    global random
     random = (a*random + c) % m
     return random
 
 def chance(lstRarity,rarity):
+    # Menghasilkan array peluang untuk mendapatkan rarity tertentu berdasarkan rarity consumable yang digunakan untuk gacha
+    # I.S. lstRarity dan rarity terdefinisi
+    # F.S. dikembalikan lstRarity yang nilainya telah diubah
+    
+    # KAMUS LOKAL
+    # sumN : float
+    
+    # ALGORITMA
     if rarity == 'C':
         lstRarity[0] += 90
         lstRarity[1] += 10
@@ -1155,21 +1365,37 @@ def chance(lstRarity,rarity):
     else:
         lstRarity[2] += 10
         lstRarity[3] += 90
-    sum = 0
+    
+    # Menjadikan total peluang tetap 100 persen
+    sumN = 0
     for i in range(4):
-        sum += lstRarity[i]
+        sumN += lstRarity[i]
     for i in range(4):
-        lstRarity[i] = lstRarity[i] * 100 / sum
-
+        lstRarity[i] = lstRarity[i] * 100 / sumN
+        
     return lstRarity
 
-def printChance(chance,rarity):
-    if chance != 0:
-        return Bold(rarity) + " (" + Bold("{:.2f}".format(chance)) + "%) "
-    else:
-        return ""
-
 def hasilGacha(lstChance):
+    # Mengembalikan rarity berdasarkan array peluang
+    # I.S. lstChance terdefinisi
+    # F.S. dikembalikan rarity yang didapatkan secara acak berdasarkan array peluang
+    
+    # KAMUS LOKAL
+    # random, i : integer
+
+    # Function / Procedure
+    # seed()
+    # Mendapatkan seed berdasarkan time.time() (jumlah detik sejak 1 januari 1970) untuk prosedure rand()
+    # I.S. random terdefinisi
+    # F.S. random diubah nilainya sesuai time.time()
+    
+    # rand()
+    # Menghasilkan angka acak yang akan digunakan untuk gacha
+    # I.S. random terdefinisi
+    # F.S. dikembalikan random yang nilainya diubah menjadi angka acak baru
+
+    # ALGORITMA
+    seed()
     random = rand() % 100 # 0 - 99
     random += 1
     for i in range(4):
@@ -1183,20 +1409,7 @@ def hasilGacha(lstChance):
                 return 'A'
             else:
                 return 'S'
-
-def Gacha():
-    global lstChance
-    global inventory_user
-    global consumable
-    
-    print()
-    print("========INVENTORY========")
-    count = 0
-    IDInventory = []
-    for i in range(len(inventory_user)):
-        if inventory_user[i][0] == idUser:
-            count += 1
-
+            
 def gacha():
     global lstChance
     global inventory_user
@@ -1302,18 +1515,28 @@ def gacha():
 
 # ============================ FUNGSI TAMBAHAN ========================================
 
-# Mengembalikan string menjadi tulisan tebal
 def Bold(string):
+    # Mengubah text menjadi terlihat bold jika di-print
+    # I.S. text terdefinisi
+    # F.S. text diberi 'kode' yang jika di-print text menjadi terlihat bold
+    
+    # KAMUS LOKAL
+    # hasil : string
+    
+    # ALGORITMA
     hasil = "\033[1m" + string + "\033[0m"
     return hasil
 
-# Mengubah data
-def modify_data(data, idx, col, value):
-    data[idx][col] = value
-    return data
-
 # Mencari data Item berdasarkan ID
 def cariID(data,ID):
+    # Mencari index dimana ID adaa pada data
+    # I.S. data dan ID terdefinisi
+    # F.S. dikembalikan index dimana ID berada pada data 
+    
+    # KAMUS LOKAL
+    # i : integer
+    
+    # ALGORITMA
     for i in range(len(data)):
         if data[i][0] == ID:
             return i
@@ -1337,34 +1560,38 @@ def IDItemAda(data,ID):
 
 # Mencari data berdasarkan index (generalisasi cariID)
 def cariData(data,dicari,index):
+    # Mencari "dicari" di dalam data berdasarkan index kolomnya
+    # I.S. data, dicari, dan index terdefinisi
+    # F.S. dikembalikan index baris dimana "dicari" berada pada data
+    
+    # KAMUS LOKAL
+    # i : integer
+    
+    # ALGORITMA
     for i in range(len(data)):
         if data[i][index] == dicari:
             return i
 
-# Mengembalikan string menjadi string berwarna jika di-print
-def colorStr(string,color):
-    if color == "purple":
-        warna = '\033[95m'
-    elif color == "cyan":
-        warna = '\033[96m'
-    elif color == "darkcyan":
-        warna = '\033[36m'
-    elif color == "blue":
-        warna = '\033[94m'
-    elif color == "green":
-        warna = '\033[92m'
-    elif color == "yellow":
-        warna = '\033[93m'
-    elif color == "red":
-        warna = '\033[91m'
-    elif color == "bold":
-        warna = '\033[1m'
-    else:
-        return string
-    return warna + string + '\033[0m'
+def colorRed(text):
+    # Mengembalikan string menjadi string berwarna merah jika di-print
+    # I.S. text terdefinisi
+    # F.S. text diberi 'kode' yang jika di-print text menjadi terlihat bold
+    
+    # KAMUS LOKAL
+    
+    # ALGORITMA
+    return '\033[91m' + text + '\033[0m'
 
 # Memvalidasi input tanggal
 def tglValid(date):
+    # Mengembalikan True juka date valid sesuai format DD/MM/YYYY, dan False jika sebaliknya
+    # I.S. date terdefinisi
+    # F.S. dikembalikan True jika format date benar, dan False jika salah
+    
+    # KAMUS LOKAL
+    # date_format : string
+    
+    # ALGORITMA
     date_format = '%d/%m/%Y'
     try:
         datetime.datetime.strptime(date, date_format)
@@ -1390,16 +1617,16 @@ def validasiYN(string):
     
 # ============================== MAIN PROGRAM =======================================
 
+# INISIALISASI
 user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []; inventory_user = []
 idUser = ""; random=0; lstChance = [0,0,0,0]
 lstPerintah = ['register', 'login', 'caricarity', 'caritahun', 'tambahitem', 'hapusitem', 'ubahjumlah', 'pinjam', 
                'kembalikan', 'minta', 'riwayatpinjam', 'riwayatkembali', 'riwayatambil', 'save', 'help', 'gacha']
-
-
 program = True
 hasLogin = False
 isAdmin = False
 
+# Pemanggilan procedure loading()
 directory = loading()
 
 if not(directory == None):
@@ -1428,18 +1655,16 @@ if not(directory == None):
     print('Selamat datang di "Kantong Ajaib!"')
 
     while (program):
-        print(colorStr(">>> ","red"),end='')
+        print(colorRed(">>> "),end='')
         perintah = input()
         if perintah == "help":
             help()
         elif perintah == "login":
             if hasLogin:
-                print(colorStr("Anda sudah login, exit terlebih dahulu untuk menggunakan akun lain","red"))
+                print(colorRed("Anda sudah login, exit terlebih dahulu untuk menggunakan akun lain"))
                 print()
             else:
                 login()
-        elif perintah == "exit":
-            exit()
             print("""\
                 
 \033[36m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣴⣶⣶⣶⣶⣶⠶⣶⣤⣤⣀⠀⠀⠀⠀⠀⠀ \033[0m
@@ -1497,7 +1722,7 @@ if not(directory == None):
                         print()
                 elif perintah == "minta":
                     if not isAdmin:
-                        pass#mintaConsumable()
+                        mintaConsumable()
                     else:
                         print("Maaf, hanya boleh diakses oleh user ^_^")
                         print()
@@ -1521,16 +1746,21 @@ if not(directory == None):
                         print()
                 elif perintah == "save":
                     save()
-
                 elif perintah == "gacha":
-                    gacha()
+                    if not isAdmin:
+                        gacha()
+                    else:
+                        print("Maaf, hanya boleh diakses oleh user ^_^")
+                        print()
+                elif perintah == "exit":
+                    exit()
                 else:
-                    print(colorStr("Input anda tidak valid, ketik help untuk mendapatkan daftar input yang valid","red"))
+                    print(colorRed("Input anda tidak valid, ketik help untuk mendapatkan daftar input yang valid"))
                     print("Berikut merupakan input yang valid")
                     help()        
             elif perintah in lstPerintah:
-                print(colorStr("Anda harus login terlebih dahulu","red"))
+                print(colorRed("Anda harus login terlebih dahulu"))
                 print()
             else:
-                print(colorStr("Input yang diberikan tidak tersedia","red"))
+                print(colorRed("Input yang diberikan tidak tersedia"))
                 print()

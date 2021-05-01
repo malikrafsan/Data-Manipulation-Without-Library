@@ -50,7 +50,7 @@ if args.foo and args.bar is None:
 print ("foo =", args.foo)
 print ("bar =", args.bar)
 """
-
+"""
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -67,9 +67,11 @@ else:
     print("Ada ngab")
     print(parser.parse_args().namaFolder)
 """
+"""
 if args.foo and args.bar is None:
     parser.error("--foo requires --bar. You did not specify bar.")
 
 print ("foo =", args.foo)
 print ("bar =", args.bar)
 """
+
