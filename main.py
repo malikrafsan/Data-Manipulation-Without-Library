@@ -1200,7 +1200,7 @@ def save():
     save_data("user.csv",user)
     save_data("gadget.csv",gadget)
     save_data("consumable.csv",consumable)
-    save_data("gagdet_borrow_history.csv",gadget_borrow_history)
+    save_data("gadget_borrow_history.csv",gadget_borrow_history)
     save_data("gadget_return_history.csv",gadget_return_history)
     save_data("consumable_history.csv",consumable_history)
     save_data("inventory_user.csv",inventory_user)
@@ -1213,16 +1213,12 @@ def save():
 def help():
     # Menampilkan keyword-keyword yang tersedia ke layar
     
-    # input/output : -
-    
     # I.S. sembarang
     # F.S. tercetak list keyword ke layar
     
     # KAMUS LOKAL
-    # -
     
     # Function / Procedure
-    # -
     
     # ALGORITMA
     
@@ -1245,16 +1241,14 @@ Ketikkan keyword di bawah ini untuk melakukan fungsi yang diinginkan
 > \033[1mriwayatkembali\033[0m => melihat record pengembalian gadget yang tersortir berdasar tanggal              \033[91m(Akses: Admin)\033[0m
 > \033[1mriwayatambil\033[0m   => melihat record pengambilan consumable yang tersortir berdasar tanggal           \033[91m(Akses: Admin)\033[0m
 > \033[1msave\033[0m           => menyimpan data setelah dilakukan perubahan                                      \033[91m(Akses: Admin/User)\033[0m
-> \033[1mhelp\033[0m           => memberikan panduan penggunaan sistem                                            \033[91m(Akses: Admin/User)\033[0m
 > \033[1mgacha\033[0m          => menggacha consumable yang ada di inventory untuk mendapatkan consumable baru    \033[91m(Akses: User)\033[0m
-> \033[1mexit\033[0m           => keluar dari program                                                             \033[91m(Akses: Admin/User)\033[0m
+> \033[1mhelp\033[0m           => memberikan panduan penggunaan sistem                                            \033[91m(Tidak perlu login)\033[0m
+> \033[1mexit\033[0m           => keluar dari program                                                             \033[91m(Tidak perlu login)\033[0m
           """)
 
 # ============================ F17 ========================================
 def exit():
     # Menutup dan keluar dari program
-    
-    # input/output : -
     
     # I.S. program sedang berjalan
     # F.S. program ditutup dan selesai
@@ -1272,11 +1266,12 @@ def exit():
     # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
     
     # ALGORITMA
-    isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (Y/N) ")
-    while not validasiYN(isSave):
+    if hasLogin:
         isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (Y/N) ")
-    if isSave == "Y":
-        save()
+        while not validasiYN(isSave):
+            isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (Y/N) ")
+        if isSave == "Y":
+            save()
     print()
     print("Terima kasih telah menggunakan kantong ajaib ^_^")
     # Menghentikan program
@@ -1351,19 +1346,19 @@ def chance(lstRarity,rarity):
     
     # ALGORITMA
     if rarity == 'C':
-        lstRarity[0] += 90
-        lstRarity[1] += 10
+        lstRarity[0] += 90.0
+        lstRarity[1] += 10.0
     elif rarity == 'B':
-        lstRarity[0] += 10
-        lstRarity[1] += 80
-        lstRarity[2] += 10
+        lstRarity[0] += 10.0
+        lstRarity[1] += 80.0
+        lstRarity[2] += 10.0
     elif rarity == 'A':
-        lstRarity[1] += 10
-        lstRarity[2] += 80
-        lstRarity[3] += 10
+        lstRarity[1] += 10.0
+        lstRarity[2] += 80.0
+        lstRarity[3] += 10.0
     else:
-        lstRarity[2] += 10
-        lstRarity[3] += 90
+        lstRarity[2] += 10.0
+        lstRarity[3] += 90.0
     
     # Menjadikan total peluang tetap 100 persen
     sumN = 0
@@ -1371,7 +1366,6 @@ def chance(lstRarity,rarity):
         sumN += lstRarity[i]
     for i in range(4):
         lstRarity[i] = lstRarity[i] * 100 / sumN
-        
     return lstRarity
 
 def hasilGacha(lstChance):
@@ -1410,11 +1404,56 @@ def hasilGacha(lstChance):
                 return 'S'
             
 def gacha():
+    # Mendapatkan consumable baru yang rarity-nya mungkin lebih tinggi / lebih rendah
+    # I.S. list lstChance, dan data inventory_user, consumable_history, consumable terdefinisi
+    # F.S. User mendapatkan consumable baru
+    
+    # KAMUS LOKAL
+    # count, urutan, digunakan, urutanInventory, jumlah : integer
+    # IDInventory : array of string
+    # digunakanBenar, jumlahBenar,finished : boolean
+    # perintah, rarity : character
+    # tambah_con_history, tambah_inventory : array of string and integer
+    # perintah : string
+    
+    # Variable global
     global lstChance
     global inventory_user
     global consumable_history
     global consumable
     
+    # Function / Procedure
+    # cariData(data)
+    # Mencari "dicari" di dalam data berdasarkan index kolomnya
+    # I.S. data, dicari, dan index terdefinisi
+    # F.S. dikembalikan index baris dimana "dicari" berada pada data
+
+    # cariID(data : array of array of string and integer, ID : string) -> integer
+    # Mencari index dimana ID adaa pada data
+    # I.S. data dan ID terdefinisi
+    # F.S. dikembalikan index dimana ID berada pada data
+
+    # Bold(text : string) -> string
+    # Mengubah text menjadi terlihat bold jika di-print
+    # I.S. text terdefinisi
+    # F.S. text diberi 'kode' yang jika di-print text menjadi terlihat bold
+
+    # chance(lstRarity : array of float, rarity : character) -> array of float
+    # Menghasilkan array peluang untuk mendapatkan rarity tertentu berdasarkan rarity consumable yang digunakan untuk gacha
+    # I.S. lstRarity dan rarity terdefinisi
+    # F.S. dikembalikan lstRarity yang nilainya telah diubah
+
+    # validasiYN(jawaban : string) -> boolean
+    # Memvalidasi input dari user, harus 'Y' atau 'N'
+    # I.S. string terdefinisi
+    # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
+
+    # hasilGacha(lstChance : array of float) -> character
+    # Mengembalikan rarity berdasarkan array peluang
+    # I.S. lstChance terdefinisi
+    # F.S. dikembalikan rarity yang didapatkan secara acak berdasarkan array peluang
+
+    # ALGORITMA
     print()
     print("========INVENTORY========")
     count = 0
@@ -1464,14 +1503,16 @@ def gacha():
             print("Pilihan harus berupa bilangan bulat")
             print()
 
+    # Mengubah data consumable, dan inventory_user
     urutan = cariID(consumable,IDInventory[digunakan - 1])
     consumable[urutan][3] += jumlah
     inventory_user[urutanInventory][2] -= jumlah
     if inventory_user[urutanInventory][2] == 0:
         inventory_user.pop(urutanInventory)
     print(Bold(consumable[urutan][1]) + " (" + Bold("x" + str(jumlah)) + ") ditambahkan!")
+    
+    # Menampilkan peluang per rarity ke layar
     lstChance = chance(lstChance,consumable[urutan][4])
-
     print("Chance mendapatkan Rarity ", end='')
     if lstChance[0] != 0:
         print(Bold('C') + " (" + Bold("{:.2f}".format(lstChance[0])) + "%) ", end='')
@@ -1482,9 +1523,8 @@ def gacha():
     if lstChance[3] != 0:
         print(Bold('S') + " (" + Bold("{:.2f}".format(lstChance[3])) + "%)", end='')
     print()
-    print()
-    perintah = input("Tambahkan item lagi? (Y/N): ")
     
+    perintah = input("Tambahkan item lagi? (Y/N): ")
     # Validasi perintah
     while not validasiYN(perintah):
         perintah = input("Tambahkan item lagi? (Y/N): ")
@@ -1498,6 +1538,7 @@ def gacha():
         print()
         rarity = hasilGacha(lstChance)        
         finished = False
+        
         while not finished:
             for i in range(len(consumable)):
                 if consumable[i][4] == rarity:
@@ -1510,10 +1551,10 @@ def gacha():
                     lstChance = [0,0,0,0]
                     finished = True
                     return
+            # Bila tidak ada data consumable yang memiliki rarity seperti yang didapatkan
             rarity = hasilGacha(lstChance)
 
 # ============================ FUNGSI TAMBAHAN ========================================
-
 def Bold(string):
     # Mengubah text menjadi terlihat bold jika di-print
     # I.S. text terdefinisi
@@ -1526,7 +1567,6 @@ def Bold(string):
     hasil = "\033[1m" + string + "\033[0m"
     return hasil
 
-# Mencari data Item berdasarkan ID
 def cariID(data,ID):
     # Mencari index dimana ID adaa pada data
     # I.S. data dan ID terdefinisi
@@ -1539,7 +1579,6 @@ def cariID(data,ID):
     for i in range(len(data)):
         if data[i][0] == ID:
             return i
-
 
 def IDItemAda(data,ID):
     # Mengecek apakah ID ada pada data
@@ -1557,7 +1596,6 @@ def IDItemAda(data,ID):
             return True
     return False
 
-# Mencari data berdasarkan index (generalisasi cariID)
 def cariData(data,dicari,index):
     # Mencari "dicari" di dalam data berdasarkan index kolomnya
     # I.S. data, dicari, dan index terdefinisi
@@ -1574,7 +1612,7 @@ def cariData(data,dicari,index):
 def colorRed(text):
     # Mengembalikan string menjadi string berwarna merah jika di-print
     # I.S. text terdefinisi
-    # F.S. text diberi 'kode' yang jika di-print text menjadi terlihat bold
+    # F.S. text diberi 'kode' yang jika di-print text menjadi terlihat merah
     
     # KAMUS LOKAL
     
@@ -1619,7 +1657,7 @@ def validasiYN(string):
 # INISIALISASI
 user =[]; gadget = []; consumable = []; consumable_history = []; gadget_borrow_history = []; gadget_return_history = []; inventory_user = []
 idUser = ""; random=0; lstChance = [0,0,0,0]
-lstPerintah = ['register', 'login', 'caricarity', 'caritahun', 'tambahitem', 'hapusitem', 'ubahjumlah', 'pinjam', 
+lstPerintah = ['register', 'login', 'carirarity', 'caritahun', 'tambahitem', 'hapusitem', 'ubahjumlah', 'pinjam', 
                'kembalikan', 'minta', 'riwayatpinjam', 'riwayatkembali', 'riwayatambil', 'save', 'help', 'gacha']
 program = True
 hasLogin = False
@@ -1653,6 +1691,7 @@ if not(directory == None):
                         """)
     print('Selamat datang di "Kantong Ajaib!"')
 
+    # Jalannya program utama
     while (program):
         print(colorRed(">>> "),end='')
         perintah = input()
@@ -1677,6 +1716,9 @@ if not(directory == None):
 \033[36m⠈⠓⠶⣶⣾⣿⣿⣿⣧⡀⠀⠈⠒⢤⣀⣀⡀⠀⠀⣀⣀⡠⠚⠁⠀⢀⡼⠃⠀⠀ \033[0m
 \033[36m⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣭⣭⣭⣭⣭⣥⣤⣤⣤⣴⣟⠁\033[0m
                                 """)
+        elif perintah == "exit":
+            # Asumsi exit tidak perlu login
+            exit()
         else:
             if hasLogin:
                 if perintah == "register":
@@ -1751,15 +1793,16 @@ if not(directory == None):
                     else:
                         print("Maaf, hanya boleh diakses oleh user ^_^")
                         print()
-                elif perintah == "exit":
-                    exit()
                 else:
-                    print(colorRed("Input anda tidak valid, ketik help untuk mendapatkan daftar input yang valid"))
+                    # Masukan salah, tidak sesuai keyword yang valid, sudah login
+                    print(colorRed("Input anda tidak valid"))
                     print("Berikut merupakan input yang valid")
                     help()        
             elif perintah in lstPerintah:
+                # Masukan benar, tetapi belum login
                 print(colorRed("Anda harus login terlebih dahulu"))
                 print()
             else:
+                # Masukan salah, tidak sesuai keyword yang valid, belum login
                 print(colorRed("Input yang diberikan tidak tersedia"))
                 print()
