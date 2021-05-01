@@ -22,9 +22,8 @@ def mintaCon():
         print("ID item tidak tersedia, silakan inputkan kembali")
         ID = input("Masukkan ID item: ")
     jumlah = input("Jumlah: ")
-    while not jumlahValid(consumable,ID,jumlah):
+    #while not jumlahValid(consumable,ID,jumlah):
         
-
 def jumlahValid(data,ID,jumlahAmbil):
     if jumlahAmbil > 0:
         for i in range(len(data)):
@@ -203,3 +202,84 @@ def exit():
     print()
     print("Terima kasih telah menggunakan kantong ajaib ^_^")
     program = False
+
+# ============================ F10 ========================================
+def mintaConsumable():
+    # Meminta consumable yang tersedia pada database
+    
+    # input/output ->   consumable : array of array of string and integer
+    #                   inventory_user : array of array of string and integer
+    #                   consumable_history : array of array of string and integer
+    
+    # I.S. matriks data consumable, inventory_user, dan consumable_history terdefinisi
+    # F.S. consumable terpinjam dan data consumable, inventory_user, consumable_history telah diubah
+    
+    # KAMUS LOKAL
+    # ID, tanggal : string
+    # indexCon, jumlah, dataInventory : integer
+    # jumlahCocok : boolean
+    # tambahHistory, tambahInventory : array of string and integer
+    
+    # Function / Procedure
+    # cariID(data : array of array of string and integer, ID : string) -> integer
+    # Mencari index dimana ID adaa pada data
+    # I.S. data dan ID terdefinisi
+    # F.S. dikembalikan index dimana ID berada pada data
+    
+    # cariData(data)
+    # Mencari "dicari" di dalam data berdasarkan index kolomnya
+    # I.S. data, dicari, dan index terdefinisi
+    # F.S. dikembalikan index baris dimana "dicari" berada pada data
+    
+    # Bold(string) -> string
+    # Mengubah text menjadi terlihat bold jika di-print
+    # I.S. text terdefinisi
+    # F.S. text diberi 'kode' yang jika di-print text menjadi terlihat bold
+
+    # ALGORITMA
+    ID = input("Masukkan ID item: ")
+    
+    # Validasi ID ada
+    while (cariID(consumable,ID) == None):
+        print("ID item tidak tersedia, mohon inputkan ID yang benar")
+        print()
+        ID = input("Masukkan ID item: ")
+        indexCon = cariID(consumable,ID)
+    
+    # Validasi jumlah
+    jumlahCocok = False
+    while not jumlahCocok:
+        try:
+            jumlah = int(input("Jumlah: "))
+            if jumlah > consumable[indexCon][3]:
+                print("Jumlah melebihi jumlah database")
+                print()
+            elif jumlah <= 0:
+                print("Jumlah harus positif")
+                print()
+            else:
+                jumlahCocok = True
+        except ValueError:
+            print("Jumlah harus berupa bilangan bulat, silakan input kembali")
+            print()
+    
+    # Validasi tanggal
+    tanggal = input("Tanggal permintaan: ")
+    while not tglValid(tanggal):
+        print("Tanggal yang diinputkan invalid, mohon inputkan kembali")
+        print()
+        tanggal = input("Tanggal permintaan: ")
+    
+    # Mengubah data pada consumable, consumable_history, dan inventory_user
+    consumable[indexCon][3] -= jumlah
+    tambahHistory = ["CH" + str(len(consumable_history)), idUser, ID, tanggal, jumlah]
+    consumable_history.append(tambahHistory)
+    dataInventory = cariData(inventory_user,ID,1)
+    if dataInventory == None:
+        tambahInventory = [idUser,ID,jumlah]
+        inventory_user.append(tambahInventory)
+    else:
+        inventory_user[dataInventory][2] += jumlah
+    
+    # Mencetak ke layar bahwa consumable berhasil diambil
+    print("Item " + Bold(consumable[indexCon][1] + " (x" + str(jumlah) + ")") + " telah berhasil diambil!")

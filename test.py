@@ -75,3 +75,8 @@ print ("foo =", args.foo)
 print ("bar =", args.bar)
 """
 
+a = 4
+def lala():
+    return a + 3
+
+print(lala())
