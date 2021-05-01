@@ -709,8 +709,7 @@ def mintaConsumable():
                 print()
             else:
                 jumlahCocok = True
-        except:
-            ValueError
+        except ValueError:
             print("Jumlah harus berupa bilangan bulat, silakan input kembali")
             print()
     
