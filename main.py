@@ -571,9 +571,9 @@ def pinjam():
         print("Maaf, anda pernah meminjam gadget yang sama dan belum mengembalikannya, anda harus mengembalikan secara keseluruhan gadget yang baru saja anda ingin pinjam")
         print()
 
-# ============================ F9 ========================================
+# ============================ F9 + FB02 ========================================
 def kembalikan():
-    # Mengembalikan gadget yang pernah dipinjam
+    # Mengembalikan gadget yang pernah dipinjam baik sebagian maupun keseluruhan
     
     # input/output -> gadget : array of array of string and integer
     # input/output -> gadget_borrow_history : array of array of string, integer, and boolean
@@ -1497,7 +1497,7 @@ if not(directory == None):
                         print()
                 elif perintah == "minta":
                     if not isAdmin:
-                        pass#mintaConsumable()
+                        mintaConsumable()
                     else:
                         print("Maaf, hanya boleh diakses oleh user ^_^")
                         print()
