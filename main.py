@@ -72,13 +72,13 @@ def login():
     global hasLogin
     global isAdmin
     global idUser
-    
+
     # Function / Procedure
     # hashing(password : string) -> integer
     # Meng-hash password user menggunakan metode Polynomial Rolling Hash
     # I.S. password yang belum di hash terdefinisi
     # F.S. password ter-hash
-    
+
     # Bold(text : string) -> string
     # Mengubah text menjadi terlihat bold jika di-print
     # I.S. text terdefinisi
@@ -555,6 +555,9 @@ def pinjam():
         print("Maaf, anda pernah meminjam gadget yang sama dan belum mengembalikannya, anda harus mengembalikan secara keseluruhan gadget yang baru saja anda ingin pinjam")
         print()
 
+    # Referensi
+    # https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
+
 # ============================ F9 + FB02 ========================================
 def kembalikan():
     # Mengembalikan gadget yang pernah dipinjam baik sebagian maupun keseluruhan  
@@ -677,6 +680,9 @@ def kembalikan():
     # Kondisi jika user belum pernah meminjam barang
     else:
         print("Anda belum pernah meminjam gadget sama sekali")
+    
+    # Referensi
+    # https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
         
 # ============================ F10 ========================================
 def mintaConsumable():
@@ -765,24 +771,27 @@ def mintaConsumable():
     print()
     print(f"Item {consumable[indeks][1]} (x{amount_asked}) telah berhasil diambil!")
     
+    # Referensi
+    # https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
+    
 # ============================ F11 ========================================
 def riwayatPinjam():
     # Menampilkan daftar peminjaman gadget yang telah dilakukan para user ke layar
     # I.S. matriks data user, gadget, gadget_borrow_history terdefinisi
     # F.S. tercetak ke layar riwayat peminjaman user
-    
+
     # KAMUS LOKAL
     # rolling, bisaLanjut : boolean
     # count : integer
     # borrowSort : data_gadget_borrow_history
     # namaUser, namaGadget, lanjut : string
-    
+
     # Function / Procedure
     # validasiYN(jawaban : string) -> boolean
     # Memvalidasi input dari user, harus 'Y' atau 'N'
     # I.S. string terdefinisi
     # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
-    
+
     # ALGORITMA
     rolling = True
     count = 0
@@ -826,13 +835,13 @@ def riwayatKembali():
     # Menampilkan daftar pengembalian gadget yang telah dilakukan para user ke layar
     # I.S. matriks data user, gadget, gadget_borrow_history terdefinisi
     # F.S. tercetak ke layar riwayat peminjaman user
-    
+
     # KAMUS LOKAL
     # rolling, lanjutkan : boolean
     # count : integer
     # returnSort : data_gadget_return_histroy
     # namaUser, namaGadget, id_user, id_gadget, nextInp : string
-    
+
     # Function / Procedure
     # validasiYN(jawaban : string) -> boolean
     # Memvalidasi input dari user, harus 'Y' atau 'N'
@@ -888,19 +897,19 @@ def riwayatConsumable():
     # Menampilkan daftar pengambilan consumable yang telah dilakukan para user ke layar
     # I.S. matriks data user, gadget, gadget_borrow_history terdefinisi
     # F.S. tercetak ke layar riwayat peminjaman user
-    
+
     # KAMUS LOKAL
     # rolling, berikutnya : boolean
     # count : integer
     # consumableSort : data_consumable_history
     # namaUser, namaConsumable : string
-    
+
     # Function / Procedure
     # validasiYN(jawaban : string) -> boolean
     # Memvalidasi input dari user, harus 'Y' atau 'N'
     # I.S. string terdefinisi
     # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
-    
+
     # ALGORITMA
     rolling = True
     count = 0
@@ -1108,6 +1117,9 @@ def fileExist(files):
         return True
     else:
         return False
+    
+    # Referensi
+    # https://13518114.medium.com/tubes-walkthrough-1-read-data-dari-csv-tanpa-library-605a6afe92db
 
 # ============================ F15 ========================================
 def save_data(file,data):
@@ -1208,6 +1220,9 @@ def save():
     print("Data telah disimpan pada folder " + Bold(directory))
     # Berpindah directory ke folder parent
     os.chdir('../')
+    
+    # Referensi
+    # https://13518114.medium.com/tubes-walkthrough-1-read-data-dari-csv-tanpa-library-605a6afe92db
 
 # ============================ F16 ========================================
 def help():
@@ -1281,15 +1296,12 @@ def exit():
 # ============================ FB01 ========================================
 def hashing(str):
     # Melakukan hashing pada password dengan metode RollingHash yang bersifat satu arah
-    # input -> str : string
-    # output -> integer
-    
     # I.S. string password terdefinisi
     # F.S. string password telah dilakukan hashing
-    
+
     # KAMUS LOKAL
     # P, m, powerOfP, hashed, i : integer
-    
+
     # ALGORITMA
     P = 101
     m = 1e9 + 1
@@ -1299,6 +1311,10 @@ def hashing(str):
         hashed = ((hashed + (ord(str[i]) - ord('!') + 1) * powerOfP) % m) 
         powerOfP = (powerOfP * P) % m
     return int(hashed)
+
+    # referensi
+    # https://www.geeksforgeeks.org/string-hashing-using-polynomial-rolling-hash-function/
+    # https://en.wikipedia.org/wiki/Rolling_hash
 
 # ============================ FB03 ========================================
 def seed():
@@ -1370,7 +1386,7 @@ def chance(lstRarity,rarity):
     return lstRarity
 
 def hasilGacha(lstChance):
-    # Mengembalikan rarity berdasarkan array peluang
+    # Mengembalikan hasil rarity gacha berdasarkan array peluang
     # input -> lstChance : array of float
     # output -> character
     
@@ -1428,7 +1444,8 @@ def gacha():
     global consumable
     
     # Function / Procedure
-    # cariData(data)
+    # cariData(data: any of data_user or data_gadget or data_consumable or data_gadget_return_history or data_gadget_borrow_histroy or 
+    #                   data_consumable_history or data_inventory_user, ID : string, index : integer) -> integer
     # Mencari "dicari" di dalam data berdasarkan index kolomnya
     # I.S. data, dicari, dan index terdefinisi
     # F.S. dikembalikan index baris dimana "dicari" berada pada data
