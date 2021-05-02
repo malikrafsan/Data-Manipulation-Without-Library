@@ -1,13 +1,5 @@
 import os; import sys; import math; import time; import argparse; import datetime
 
-# type data_user : <id: string, username: string, nama: string, alamat: string, password: integer, role: string>
-# type data_gadget : <id:string, nama: string; deskripsi: string; jumlah: integer; rarity: character; tahun_ditemukan: integer>
-# type data_consumable : <id: string; nama: string; deskripsi:string; jumlah:integer; rarity: character>
-# type data_gadget_borrow_history : <id: string; id_peminjam: string; id_gadget: string; tanggal_peminjaman: string; jumlah: integer; is_returned: boolean>
-# type data_gadget_return_history : <id: string; id_peminjaman: string; tanggal_pengembalian: string; jumlah_pengembalian: integer; applicable_or_not: string>
-# type data_consumable_history : <id: string; id_pengambil: string; id_consumable: string; tanggal_pengambilan: string; jumlah: integer>
-# type data_inventory_user : <id_user: string; id_consumable: string; jumlah_yang_dipunyai: integer>
-
 # ============================ F1 ========================================
 def register():
     # Menambahkan data user baru ke dalam database
@@ -18,7 +10,7 @@ def register():
     # nama, username, password, alamat, idUser : string
     # notUnik : boolean
     # i, count : integer
-    # register : array of array of string
+    # register : array of data_user
     
     # Variable global
     global user 
@@ -241,10 +233,11 @@ def tambahItem():
     # nama, deskripsi : string
     # jumlah, tahun : integer
     # rarity : character
-    # arrTambahItem : data_gadget / data_consumable
+    # arrTambahItem : any of data_gadget or data_consumable
 
     # Function / Procedure
-    # IDItemAda(data : array of array of string and integer, ID : string) -> boolean
+    # IDItemAda(data : any of data_user or data_gadget or data_consumable or data_gadget_return_history or data_gadget_borrow_histroy or 
+    #           data_consumable_history or data_inventory_user, ID : string) -> boolean
     # Mengecek apakah ID ada pada data
     # I.S. data dan ID terdefinisi
     # F.S. Mengembalikan True jika ID item ada di data dan False jika sebaliknya
@@ -322,23 +315,24 @@ def hapusItem():
     # Menghapus gadget dari database  
     # I.S. matriks data gadget terdefinisi
     # F.S. data yang diinputkan dihapus dari data gadget
-    
+
     # KAMUS LOKAL
     # ID, jawaban : string
     # urutan : integer
     # rolling : boolean
-    
+
     # Function / Procedure
     # validasiYN(jawaban : string) -> boolean
     # Memvalidasi input dari user, harus 'Y' atau 'N'
     # I.S. string terdefinisi
     # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
 
-    # IDItemAda(data : array of array of string and integer, ID : string) -> boolean
+    # IDItemAda(data : any of data_user or data_gadget or data_consumable or data_gadget_return_history or data_gadget_borrow_histroy or 
+    #                   data_consumable_history or data_inventory_user, ID : string) -> boolean
     # Mengecek apakah ID ada pada data
     # I.S. data dan ID terdefinisi
     # F.S. Mengembalikan True jika ID item ada di data dan False jika sebaliknya
-    
+
     # ALGORITMA
     # Validasi ID
     rolling = True
@@ -513,18 +507,27 @@ def pinjam():
     # Jika user sudah pernah mengembalikan secara lengkap gadget dengan id = id_item (atau) gadget dengan id = id item belum pernah ia pinjam sama sekali
     if syarat_terpenuhi_1 == True or check == None:
         # Validasi Tanggal
-        format = "%d/%m/%Y"
-    
-        while(True):
-            date_string = input("Tanggal peminjaman: ").strip()
-        
+        kondisi = True
+        while(kondisi):
+            format = "%d/%m/%Y"
+            date_string = input("Tanggal peminjaman: ")
+            
+            cond = False
+            if len(date_string) == 10:
+                cond = True
+            if cond == False:
+                while(True):
+                    print("Masukan tanggal dengan benar, yakni 2 digit tanggal, 2 digit bulan, dan 4 digit tahun dan format DD/MM/YYYY")
+                    date_string = input("Tanggal peminjaman: ")
+                    if len(date_string) == 10:
+                        cond = True
+                        break        
             try:
                 datetime.datetime.strptime(date_string, format)
                 break
             except ValueError:
                 print("Tanggal yang anda masukan salah. Silahkan masukan kembali tanggal dengan format DD/MM/YYYY")
-                print()
-            
+
         # Validasi jumlah
         current_amount = gadget[indeks][3]
         terms = True
@@ -594,19 +597,29 @@ def kembalikan():
             except ValueError:
                 print("Silahkan masukan kembali nomor dengan benar")
             
-        # Meminta user memasukan tanggal dan memvalidasinya        
-        format = "%d/%m/%Y"
-    
-        while(True):
-            tanggal = input("Tanggal pengembalian: ").strip()
-        
+        # Meminta user memasukan tanggal dan memvalidasinya
+        kondisi = True
+        while(kondisi):
+            format = "%d/%m/%Y"
+            date_string = input("Tanggal pengembalian: ")
+            
+            cond = False
+            if len(date_string) == 10:
+                cond = True
+
+            if cond == False:
+                while(True):
+                    print("Masukan tanggal dengan benar, yakni 2 digit tanggal, 2 digit bulan, dan 4 digit tahun dan format DD/MM/YYYY")
+                    date_string = input("Tanggal pengembalian: ")
+                    if len(date_string) == 10:
+                        cond = True
+                        break        
             try:
-                datetime.datetime.strptime(tanggal, format)
+                datetime.datetime.strptime(date_string, format)
                 break
             except ValueError:
                 print("Tanggal yang anda masukan salah. Silahkan masukan kembali tanggal dengan format DD/MM/YYYY")
-                print()
-            
+
         # Membuat string dari gadget yang user ingin kembalikan
         id_returned_gadget = updated_unique_personal_borrow_not_returned[option - 1]
     
@@ -643,7 +656,7 @@ def kembalikan():
                 
         # Menambahkan entri gadget_return_history
         id_pengembalian = 'GRH' + str(len(gadget_return_history))
-        gadget_return_history.append([id_pengembalian, gadget_borrow_history[indeksnya][0], tanggal, amount_returned, 'applicable'])                
+        gadget_return_history.append([id_pengembalian, gadget_borrow_history[indeksnya][0], date_string, amount_returned, 'applicable'])                
         
         # Total keseluruhan yang pernah dikembalikan sebelumnya ditambah dengan yang baru saja hendak dikembalikan
         total_amount_returned_updated = total_amount_returned + amount_returned
@@ -670,7 +683,7 @@ def mintaConsumable():
     # Meminta consumable yang tersedia pada database
     # I.S. matriks data consumable, inventory_user, dan consumable_history terdefinisi
     # F.S. consumable terpinjam dan data consumable, inventory_user, consumable_history telah diubah
-    
+
     # KAMUS LOKAL
     # ID, date_string, id_history : string
     # kondisinya, ketemu, syrt : boolean
@@ -694,7 +707,7 @@ def mintaConsumable():
                 print("ID item tidak tersedia, mohon inputkan ID yang benar")
         except ValueError:
             print()
-    
+
     # Validasi jumlah
     syrt = True
     while syrt:
@@ -708,16 +721,28 @@ def mintaConsumable():
             print("Masukan jumlah dengan benar dengan bilangan bulat")
 
     # Validasi tanggal
-    format = "%d/%m/%Y"
-    while(True):
-        date_string = input("Tanggal permintaan: ").strip()
+    kondisi = True
+    while(kondisi):
+        format = "%d/%m/%Y"
+        date_string = input("Tanggal permintaan: ")
+        
+        cond = False
+        if len(date_string) == 10:
+            cond = True
+
+        if cond == False:
+            while(True):
+                print("Masukan tanggal dengan benar, yakni 2 digit tanggal, 2 digit bulan, dan 4 digit tahun dan format DD/MM/YYYY")
+                date_string = input("Tanggal permintaan: ")
+                if len(date_string) == 10:
+                    cond = True
+                    break        
         try:
             datetime.datetime.strptime(date_string, format)
             break
         except ValueError:
             print("Tanggal yang anda masukan salah. Silahkan masukan kembali tanggal dengan format DD/MM/YYYY")
-            print()
-    
+
     # Mengubah data terbaru
     id_history = 'CH' + str(len(consumable_history))
     consumable_history.append([id_history, idUser, ID, date_string, amount_asked])
@@ -735,7 +760,7 @@ def mintaConsumable():
         inventory_user[final_indeks][2] = inventory_user[final_indeks][2] + amount_asked
     else: # belum pernah
         inventory_user.append([idUser, ID, amount_asked])
-    
+
     # Menampilkan ke user bahwa item berhasil diminta
     print()
     print(f"Item {consumable[indeks][1]} (x{amount_asked}) telah berhasil diambil!")
@@ -977,11 +1002,16 @@ def load(folder):
     # Membaca file-file csv pada folder yang diinputkan
     # I.S. pada folder terdapat file-file csv yang dibutuhkan
     # F.S. didapatkan matriks data sesuai dengan file-file csv yang ada
-    
+
     # KAMUS LOKAL
-    # user : array of array of string
-    # gadget, gadget_borrow_history, gadget_return_history, consumable, consumable_history, inventory_user : array of array of string and integer
-    
+    # user : array of data_user
+    # gadget : array of data_gadget 
+    # consumable : array of data_consumable
+    # consumable_history : array of data_consumable_history 
+    # gadget_borrow_history : array of data_gadget_borrow_history
+    # gadget_return_history : array of data_gadget_return_history
+    # inventory_user : array of data_inventory_user
+
     # Variable global
     global user
     global gadget
@@ -990,21 +1020,22 @@ def load(folder):
     global gadget_borrow_history
     global gadget_return_history
     global inventory_user
-    
+
     # Function / Procedure
     # load_data(file : csv) -> array of array of string
     # Membaca file csv dan mengembalikan matriks data sesuai data csv
     # I.S. file terdefinisi
     # F.S. dikembalikan matriks data sesuai file
 
-    # tryChange(data : array of array of string) -> array of array of string and integer and boolean
+    # tryChange(data : array of array of string) -> any of data_user or data_gadget or data_consumable or data_gadget_return_history or 
+    #                                               data_gadget_borrow_histroy or data_consumable_history or data_inventory_user
     # Mengubah tipe data yang ada pada data menjadi boolean atau integer jika dimungkinkan
     # I.S. data terdefinisi
     # F.S. dikembalikan data dimana elemen yang dapat diubah, diubah menjadi boolean atau integer telah diubah
 
     # ALGORITMA
     os.chdir('./' + str(folder))
-    
+
     user = tryChange(load_data("user.csv"))
     gadget = tryChange(load_data("gadget.csv"))
     consumable = tryChange(load_data("consumable.csv"))
@@ -1110,7 +1141,8 @@ def convert_datas_to_string(data):
     
     # KAMUS LOKAL
     # string_data : string
-    # arr_data : array of string and integer and boolean
+    # arr_data : any of data_user or data_gadget or data_consumable or data_gadget_return_history or data_gadget_borrow_histroy 
+    #               or data_consumable_history or data_inventory_user
     # arr_data_all_string : array of string
     
     # ALGORITMA
@@ -1125,27 +1157,39 @@ def save():
     # Menyimpan data ke dalam file di folder yang diinputkan
     # I.S. user, gadget, consumable, gadget_borrow_history, gadget_return_history, consumable_history, inventory_user terdefinisi
     # F.S. file user, gadget, consumable, gadget_borrow_history, gadget_return_history, consumable_history, inventory_user tersimpan
-    
+
     # KAMUS LOKAL
     # parent, directory, path : string
-    
+
     # Function / Procedure
-    # save_data (file : csv, data : array of array of string and integer and boolean)
+    # save_data (file : csv, data : any of data_user or data_gadget or data_consumable or data_gadget_return_history or 
+    #                               data_gadget_borrow_histroy or data_consumable_history or data_inventory_user)
     # Menulis data ke dalam file csv
     # I.S. data terdefinisi
     # F.S. jika sebelumnya file sudah ada, maka di file diperbarui, dan jika belum ada, maka tertulis file baru
-    
+
     # ALGORITMA
     parent = os.getcwd()
-    directory = input("Masukkan nama folder penyimpanan : ")
+
+    # Validasi directory
+    checkedDir = False
+    while not checkedDir:
+        directory = input("Masukkan nama folder penyimpanan : ")
+        checkedDir = True
+        for i in range(len(directory)):
+            if directory[i] in ('\/:*?"<>|'):
+                checkedDir = False
+                print('nama folder anda mengandung \/:*?"<>|')
+                print()
+
     path = os.path.join(parent, directory)
-    
+
     try:
         # Membuat folder baru jika folder belum ada
         os.mkdir(path)
     except:
         FileExistsError
-    
+
     # Berpindah directory ke dalam folder csv
     os.chdir('./' + directory)
     print()
@@ -1160,7 +1204,7 @@ def save():
     save_data("gadget_return_history.csv",gadget_return_history)
     save_data("consumable_history.csv",consumable_history)
     save_data("inventory_user.csv",inventory_user)
-    
+
     print("Data telah disimpan pada folder " + Bold(directory))
     # Berpindah directory ke folder parent
     os.chdir('../')
@@ -1182,7 +1226,7 @@ Ketikkan keyword di bawah ini untuk melakukan fungsi yang diinginkan
 
 > \033[1mregister\033[0m       => melakukan registrasi user baru                                                  \033[91m(Akses: Admin)\033[0m
 > \033[1mlogin\033[0m          => melakukan login ke dalam program                                                \033[91m(Akses: Admin/User)\033[0m
-> \033[1mcaricarity\033[0m     => mencari gadget berdasarkan rarity yang diinputkan                               \033[91m(Akses: Admin/User)\033[0m
+> \033[1mcarirarity\033[0m     => mencari gadget berdasarkan rarity yang diinputkan                               \033[91m(Akses: Admin/User)\033[0m
 > \033[1mcaritahun\033[0m      => mencari gadget berdasarkan tahun ditemukan                                      \033[91m(Akses: Admin/User)\033[0m
 > \033[1mtambahitem\033[0m     => menambahkan item (gadget/consumable) ke dalam database                          \033[91m(Akses: Admin)\033[0m
 > \033[1mhapusitem\033[0m      => menghapus item (gadget/consumable) dari database                                \033[91m(Akses: Admin)\033[0m
@@ -1204,19 +1248,24 @@ def exit():
     # Menutup dan keluar dari program
     # I.S. program sedang berjalan
     # F.S. program ditutup dan selesai
-    
+
     # KAMUS LOKAL
     # isSave : string
-    
+
     # global variable
     global program
-    
+
     # Function / Procedure
     # validasiYN(jawaban : string) -> boolean
     # Memvalidasi input dari user, harus 'Y' atau 'N'
     # I.S. string terdefinisi
     # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
-    
+
+    # save()
+    # Menyimpan data ke dalam file di folder yang diinputkan
+    # I.S. user, gadget, consumable, gadget_borrow_history, gadget_return_history, consumable_history, inventory_user terdefinisi
+    # F.S. file user, gadget, consumable, gadget_borrow_history, gadget_return_history, consumable_history, inventory_user tersimpan
+
     # ALGORITMA
     if hasLogin:
         isSave = input("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (Y/N) ")
@@ -1368,7 +1417,8 @@ def gacha():
     # IDInventory : array of string
     # digunakanBenar, jumlahBenar,finished : boolean
     # perintah, rarity : character
-    # tambah_con_history, tambah_inventory : array of string and integer
+    # tambah_con_history : data_consumable_history 
+    # tambah_inventory : data_inventory_user
     # perintah : string
     
     # Variable global
@@ -1383,7 +1433,8 @@ def gacha():
     # I.S. data, dicari, dan index terdefinisi
     # F.S. dikembalikan index baris dimana "dicari" berada pada data
 
-    # cariID(data : array of array of string and integer, ID : string) -> integer
+    # cariID(data : any of data_user or data_gadget or data_consumable or data_gadget_return_history or data_gadget_borrow_histroy or 
+    #                   data_consumable_history or data_inventory_user, ID : string) -> integer
     # Mencari index dimana ID adaa pada data
     # I.S. data dan ID terdefinisi
     # F.S. dikembalikan index dimana ID berada pada data
@@ -1527,8 +1578,8 @@ def Bold(string):
 
 def cariID(data,ID):
     # Mencari index dimana ID adaa pada data
-    # input ->  data : any of data_user, data_gadget, data_consumable, data_gadget_return_history, data_gadget_borrow_histroy, 
-    #                   data_consumable_history, data_inventory_user
+    # input ->  data : any of data_user or data_gadget or data_consumable or data_gadget_return_history or data_gadget_borrow_histroy or 
+    #                   data_consumable_history or data_inventory_user
     #           ID : string
     # output -> integer
 
@@ -1545,8 +1596,8 @@ def cariID(data,ID):
 
 def IDItemAda(data,ID):
     # Mengecek apakah ID ada pada data
-    # input ->  data : any of data_user, data_gadget, data_consumable, data_gadget_return_history, data_gadget_borrow_histroy, 
-    #                   data_consumable_history, data_inventory_user
+    # input ->  data : any of data_user or data_gadget or data_consumable or data_gadget_return_history or data_gadget_borrow_histroy or 
+    #                   data_consumable_history or data_inventory_user
     #           ID : string
     # output -> boolean
     
@@ -1566,8 +1617,8 @@ def IDItemAda(data,ID):
 
 def cariData(data,dicari,index):
     # Mencari "dicari" di dalam data berdasarkan index kolomnya
-    # input ->  data : any of data_user, data_gadget, data_consumable, data_gadget_return_history, data_gadget_borrow_histroy, 
-    #                   data_consumable_history, data_inventory_user
+    # input ->  data : any of data_user or data_gadget or data_consumable or data_gadget_return_history or data_gadget_borrow_histroy or 
+    #                   data_consumable_history or data_inventory_user
     #           ID : string
     #           index : integer
     # output -> integer
@@ -1596,6 +1647,24 @@ def colorRed(text):
     # ALGORITMA
     return '\033[91m' + text + '\033[0m'
 
+def validasiYN(string):
+    # Memvalidasi input dari user, harus 'Y' atau 'N'
+    # input -> string : string
+    # output -> boolean
+    
+    # I.S. string terdefinisi
+    # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
+    
+    # KAMUS LOKAL
+    
+    # ALGORITMA
+    if (string == 'Y') or (string == 'N'):
+        return True
+    else:
+        print("Jawaban harus 'Y' atau 'N' ")
+        print()
+        return False
+
 def tglValid(date):
     # Mengembalikan True juka date valid sesuai format DD/MM/YYYY, dan False jika sebaliknya
     # input -> date : string
@@ -1609,41 +1678,35 @@ def tglValid(date):
     
     # ALGORITMA
     date_format = '%d/%m/%Y'
-    try:
-        datetime.datetime.strptime(date, date_format)
-        return True
-    except ValueError:
+    if len(date) == 10:
+        try:
+            datetime.datetime.strptime(date, date_format)
+            return True
+        except ValueError:
+            return False
+    else:
         return False
 
-def validasiYN(string):
-    # Memvalidasi input dari user, harus 'Y' atau 'N'
-    # input -> string : string
-    # output -> boolean
-    
-    # I.S. string terdefinisi
-    # F.S. mengembalikan True jika string adalah 'Y' atau 'N' dan False jika sebaliknya
-    
-    # KAMUS LOKAL
-    # string : string
-    
-    # ALGORITMA
-    if (string == 'Y') or (string == 'N'):
-        return True
-    else:
-        print("Jawaban harus 'Y' atau 'N' ")
-        print()
-        return False
-    
+
+
 # ============================== MAIN PROGRAM =======================================
 
 # KAMUS GLOBAL
-# user : data_user
-# gadget : data_gadget 
-# consumable : data_consumable
-# consumable_history : data_consumable_history 
-# gadget_borrow_history : data_gadget_borrow_history
-# gadget_return_history : data_gadget_return_history
-# inventory_user : data_inventory_user
+# type data_user : <id: string, username: string, nama: string, alamat: string, password: integer, role: string>
+# type data_gadget : <id:string, nama: string; deskripsi: string; jumlah: integer; rarity: character; tahun_ditemukan: integer>
+# type data_consumable : <id: string; nama: string; deskripsi: string; jumlah: integer; rarity: character>
+# type data_gadget_borrow_history : <id: string; id_peminjam: string; id_gadget: string; tanggal_peminjaman: string; jumlah: integer; is_returned: boolean>
+# type data_gadget_return_history : <id: string; id_peminjaman: string; tanggal_pengembalian: string; jumlah_pengembalian: integer; applicable_or_not: string>
+# type data_consumable_history : <id: string; id_pengambil: string; id_consumable: string; tanggal_pengambilan: string; jumlah: integer>
+# type data_inventory_user : <id_user: string; id_consumable: string; jumlah_yang_dipunyai: integer>
+
+# user : array of data_user
+# gadget : array of data_gadget 
+# consumable : array of data_consumable
+# consumable_history : array of data_consumable_history 
+# gadget_borrow_history : array of data_gadget_borrow_history
+# gadget_return_history : array of data_gadget_return_history
+# inventory_user : array of data_inventory_user
 # idUser, directory, perintah : string
 # random : integer
 # lstChance : array of float
@@ -1699,11 +1762,8 @@ if not(directory == None):
                 print()
             else:
                 login()
-        elif perintah == "exit":
-            # Asumsi exit tidak perlu login
-            exit()
-            print("""\
-                
+                print("""\
+                    
 \033[36m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣴⣶⣶⣶⣶⣶⠶⣶⣤⣤⣀⠀⠀⠀⠀⠀⠀ \033[0m
 \033[36m⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⣿⣿⣿⠁⠀⢀⠈⢿⢀⣀⠀⠹⣿⣿⣿⣦⣄⠀⠀⠀ \033[0m
 \033[36m⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⠿⠀⠀⣟⡇⢘⣾⣽⠀⠀⡏⠉⠙⢛⣿⣷⡖⠀ \033[0m
@@ -1714,7 +1774,10 @@ if not(directory == None):
 \033[36m⢮⠀⠀⠀⠀⣿⣿⣆⠀⠀⠻⣿⡿⠛⠉⠉⠁⠀⠉⠉⠛⠿⣿⣿⠟⠁⠀⣼⠃⠀ \033[0m
 \033[36m⠈⠓⠶⣶⣾⣿⣿⣿⣧⡀⠀⠈⠒⢤⣀⣀⡀⠀⠀⣀⣀⡠⠚⠁⠀⢀⡼⠃⠀⠀ \033[0m
 \033[36m⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣭⣭⣭⣭⣭⣥⣤⣤⣤⣴⣟⠁\033[0m
-                                """)
+                                    """)
+        elif perintah == "exit":
+            # Asumsi exit tidak perlu login
+            exit()
         else:
             if hasLogin:
                 if perintah == "register":
