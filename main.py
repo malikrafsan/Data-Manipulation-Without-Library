@@ -1565,6 +1565,8 @@ def gacha():
         while not finished:
             for i in range(len(consumable)):
                 if consumable[i][4] == rarity:
+                    # Asumsi jumlah yang diberikan kepada user terserah mahasiswa, kami memberi semua jumlah kepada user yang melakukan gacha
+                    # Asumsi user dapat memperoleh consumable yang sama
                     print("Selamat Anda mendapatkan " + Bold(consumable[i][1]) + " (Rarity " + rarity + ") sebanyak x" + Bold(str(consumable[i][3])) + "!")
                     tambah_con_history = ["CH" + str(len(consumable_history)),idUser,consumable[i][0],datetime.date.today().strftime("%d/%m/%Y"),consumable[i][3]]
                     consumable_history.append(tambah_con_history)
