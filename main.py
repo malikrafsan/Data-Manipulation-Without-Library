@@ -586,8 +586,14 @@ def kembalikan():
         # Menampilkan setiap gadget yang pernah dipinjam oleh user
         for i in range(len(updated_unique_personal_borrow_not_returned)):
             for j in range(len(gadget)):
+                syaratnya = False
                 if updated_unique_personal_borrow_not_returned[i] == gadget[j][0]:
                     print(f"{i + 1}. {gadget[j][1]}")
+                    syaratnya = True
+                    break
+            if not syaratnya: # jika gadget ada yang dihapus dan sedang dipinjam
+                print(str(i+1) + ". " + updated_unique_personal_borrow_not_returned[i] + " (entry telah dihapus dari database gadget, tidak bisa dikembalikan)")
+                updated_unique_personal_borrow_not_returned[i] = "False"
                 
         # Meminta user memilih opsi item sesuai nomor
         banyak = len(updated_unique_personal_borrow_not_returned)
@@ -597,6 +603,9 @@ def kembalikan():
                 option = int(input("Masukan nomor peminjaman: "))
                 if option > 0 and option <= banyak:
                     syaratnya = False
+                    if updated_unique_personal_borrow_not_returned[option - 1] == "False":
+                        print("Tidak dapat mengembalikan gadget yang telah dihapus")
+                        return # jika gadget ada yang dihapus dan sedang dipinjam, Asumsi tidak dapat dikembalikan
             except ValueError:
                 print("Silahkan masukan kembali nomor dengan benar")
             
@@ -625,7 +634,10 @@ def kembalikan():
 
         # Membuat string dari gadget yang user ingin kembalikan
         id_returned_gadget = updated_unique_personal_borrow_not_returned[option - 1]
-    
+
+        if id_returned_gadget[-5:] == "False":
+            gadget.append([id_returned_gadget[:-5], "nama", "deskripsi", ])
+        
         # Menelusuri entri gadget yang ingin user kembalikan pada data gadget_borrow_history
         for z in range(len(gadget_borrow_history)-1, 0, -1):
             if gadget_borrow_history[z][2] == id_returned_gadget and gadget_borrow_history[z][1] == idUser:
