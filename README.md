@@ -11,7 +11,7 @@
 ---
 
 ## Description
-- This program is developed to complete the final assignment for IF1210 Dasar Pemrograman course. This program is about data manipulation in csv using Python. We are only allowed to use certain library (os, sys, math, time, argparse, datetime) and not allowed to use other than those, including csv, pandas, etc. So we have to make our own program to open, manipulate, save, and create file csv.
+- This program is developed to complete the final assignment for IF1210 Dasar Pemrograman course. This program is about data manipulation in csv using Python. We are only allowed to use certain libraries (os, sys, math, time, argparse, datetime) and not allowed to use other than those, including data management libraries, like: csv, pandas, etc. So we have to make our own program to open, manipulate, save, and create file csv.
 
 ---
 
@@ -19,11 +19,11 @@
 1. Open your terminal (bash) in your dedicated folder for this repo
 2. Clone this repository
     ```sh
-    git clone https://github.com/malikrafsan/Tugas-Besar-IF1210.git
+    git clone https://github.com/malikrafsan/Data-Manipulation-Without-Library.git
     ```
 3. Change directory into this repo
     ```sh
-    cd Tugas-Besar-IF1210
+    cd Data-Manipulation-Without-Library
     ```
 4. Run python file (main.py)
     ```sh
